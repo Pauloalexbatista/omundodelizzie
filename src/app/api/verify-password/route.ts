@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     const { password } = await request.json();
 
-    if (password === '3GWINE') {
+    if (password?.trim() === '3GWINE') {
         const response = NextResponse.json({ success: true });
 
         // Configura um cookie que expira em 30 dias
