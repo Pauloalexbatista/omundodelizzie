@@ -45,6 +45,7 @@ export default function Footer() {
         { href: '/loja', label: 'Loja' },
         { href: '/sobre', label: 'Sobre Nós' },
         { href: '/contactos', label: 'Contactos' },
+        { href: '/admin', label: 'Admin (Dev)' },
     ];
 
     const socialLinks = [
