@@ -15,6 +15,8 @@ interface Product {
     description: string;
     featured: boolean;
     image: string;
+    is_weekly_highlight?: boolean;
+    weekly_highlight_image?: string;
 }
 
 export default function AdminPage() {
@@ -36,7 +38,9 @@ export default function AdminPage() {
         price: 0,
         description: '',
         featured: false,
-        image: ''
+        image: '',
+        is_weekly_highlight: false,
+        weekly_highlight_image: ''
     });
 
     useEffect(() => {
@@ -397,18 +401,56 @@ export default function AdminPage() {
                             </p>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2rem' }}>
-                            <input
-                                type="checkbox"
-                                id="featured"
-                                style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }}
-                                checked={formData.featured}
-                                onChange={e => setFormData({ ...formData, featured: e.target.checked })}
-                            />
-                            <label htmlFor="featured" style={{ fontSize: '0.875rem', color: 'var(--color-dark)' }}>
-                                Destacar este produto na Home
-                            </label>
+                        <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <input
+                                    type="checkbox"
+                                    id="featured"
+                                    style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }}
+                                    checked={formData.featured}
+                                    onChange={e => setFormData({ ...formData, featured: e.target.checked })}
+                                />
+                                <label htmlFor="featured" style={{ fontSize: '0.875rem', color: 'var(--color-dark)' }}>
+                                    Destacar na Loja
+                                </label>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <input
+                                    type="checkbox"
+                                    id="is_weekly_highlight"
+                                    style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }}
+                                    checked={formData.is_weekly_highlight}
+                                    onChange={e => setFormData({ ...formData, is_weekly_highlight: e.target.checked })}
+                                />
+                                <label htmlFor="is_weekly_highlight" style={{ fontSize: '0.875rem', color: 'var(--color-dark)', fontWeight: 'bold' }}>
+                                    Destaque da Semana (Página Principal)
+                                </label>
+                            </div>
                         </div>
+
+                        {formData.is_weekly_highlight && (
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Fotografia de Destaque (Fundo Transparente Recomendado)</label>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                    <input
+                                        type="text"
+                                        readOnly
+                                        className="input"
+                                        value={formData.weekly_highlight_image}
+                                        placeholder="Selecione a foto especial de destaque"
+                                        style={{ flex: 1, backgroundColor: '#fdfaea' }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="btn btn-outline"
+                                        onClick={() => setShowImageSelector(true)} // Reutiliza o selector
+                                    >
+                                        Escolher Foto
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
                             <button
@@ -483,7 +525,12 @@ export default function AdminPage() {
     return (
         <div style={styles.pageContainer}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1 className="text-3xl" style={{ color: 'var(--color-primary)' }}>Painel de Administração</h1>
+                <div style={{ display: 'flex', gap: '2rem', alignItems: 'baseline' }}>
+                    <h1 className="text-3xl" style={{ color: 'var(--color-primary)' }}>Admin - Produtos</h1>
+                    <Link href="/admin/encomendas" style={{ fontSize: '1.1rem', color: '#666', textDecoration: 'none', fontWeight: 500 }}>
+                        📦 Gestão de Encomendas
+                    </Link>
+                </div>
                 <Link href="/loja" className="btn btn-outline">
                     Voltar à Loja
                 </Link>

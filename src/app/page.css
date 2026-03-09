@@ -10,84 +10,156 @@
    Hero Section
    ============================================ */
 
-.hero {
-    position: relative;
-    height: 100vh;
+/* === Nova Hero Section Modernizada === */
+.hero-modern {
+    padding: 120px 0 80px;
+    background-color: var(--color-light);
+    min-height: 85vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    position: relative;
     overflow: hidden;
 }
 
-.hero-background {
+/* Elemento decorativo subtil no fundo */
+.hero-modern::before {
+    content: '';
     position: absolute;
-    inset: 0;
+    top: -10%;
+    right: -5%;
+    width: 40%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(197, 165, 114, 0.05) 0%, transparent 70%);
     z-index: 0;
+    pointer-events: none;
 }
 
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg,
-            rgba(10, 10, 10, 0.1) 0%,
-            rgba(10, 10, 10, 0.3) 50%,
-            rgba(10, 10, 10, 0.6) 100%);
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
     z-index: 1;
 }
 
-.hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    color: var(--color-light);
-    max-width: 900px;
-    padding: 0 var(--spacing-md);
-}
-
-.hero-badge {
-    display: inline-block;
-    padding: var(--spacing-xs) var(--spacing-lg);
-    background: var(--gradient-gold);
-    color: var(--color-dark);
-    font-size: var(--text-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-radius: var(--radius-full);
-    margin-bottom: var(--spacing-lg);
-    animation-delay: 0.2s;
+.hero-text-side {
+    max-width: 650px;
+    text-align: left;
 }
 
 .hero-title {
-    font-size: var(--text-6xl);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.05;
+    margin-bottom: 2rem;
+    color: var(--color-dark);
     font-weight: 900;
-    margin-bottom: var(--spacing-md);
-    line-height: 1.1;
-    animation-delay: 0.4s;
-    color: var(--color-light);
 }
 
-.text-gold {
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.logo-text-hero {
+    font-family: var(--font-logo);
+    display: inline-flex;
+    align-items: center;
 }
 
 .hero-subtitle {
     font-size: var(--text-xl);
-    color: var(--color-gray-200);
-    margin-bottom: var(--spacing-2xl);
+    color: var(--color-gray-600);
+    margin-bottom: 3rem;
+    max-width: 550px;
     line-height: 1.6;
-    animation-delay: 0.6s;
 }
 
 .hero-buttons {
     display: flex;
     gap: var(--spacing-md);
-    justify-content: center;
-    flex-wrap: wrap;
-    animation-delay: 0.8s;
+    justify-content: flex-start;
+}
+
+/* === Destaque da Semana (Moldura Premium) === */
+.weekly-highlight-box {
+    position: relative;
+    padding: 1rem;
+}
+
+.highlight-label {
+    position: absolute;
+    top: -10px;
+    left: 2rem;
+    background: var(--color-dark);
+    color: var(--color-secondary);
+    /* Gold text on dark */
+    padding: 0.6rem 1.8rem;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-secondary);
+}
+
+.highlight-frame {
+    background: white;
+    border: 1px solid var(--color-gray-100);
+    padding: 3.5rem 2.5rem 2.5rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+}
+
+.highlight-frame::after {
+    content: '';
+    position: absolute;
+    inset: 15px;
+    border: 1px solid rgba(197, 165, 114, 0.15);
+    pointer-events: none;
+}
+
+.highlight-frame:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+}
+
+.highlight-image-container {
+    height: 400px;
+    position: relative;
+    margin-bottom: 2.5rem;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.05));
+}
+
+.highlight-info h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-secondary);
+    /* Dourado */
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.highlight-info p {
+    color: var(--color-gray-500);
+    margin-bottom: 2rem;
+    font-size: var(--text-sm);
+    letter-spacing: 1px;
+}
+
+.btn-details {
+    color: var(--color-dark);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-decoration: none;
+    border-bottom: 2px solid var(--color-secondary);
+    padding-bottom: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-details:hover {
+    color: var(--color-secondary);
+    border-bottom-color: var(--color-dark);
 }
 
 /* Scroll Indicator */

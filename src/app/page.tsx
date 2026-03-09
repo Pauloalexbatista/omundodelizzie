@@ -1,51 +1,82 @@
+'use client';
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 import './page.css';
 
 export default function Home() {
+  const [weeklyHighlight, setWeeklyHighlight] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchWeeklyHighlight() {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('is_weekly_highlight', true)
+          .maybeSingle();
+
+        if (data) setWeeklyHighlight(data);
+      } catch (err) {
+        console.error("Erro ao carregar destaque:", err);
+      }
+    }
+    fetchWeeklyHighlight();
+  }, []);
+
   return (
     <>
       <Header />
 
       <main className="home-page">
-        {/* Hero Section */}
-        <section className="hero">
-          <div className="hero-background">
-            <Image
-              src="/images/brand/cellar-2.jpg"
-              alt="3G Wine Cellar"
-              fill
-              style={{ objectFit: 'cover' }}
-              priority
-              quality={100}
-            />
-            <div className="hero-overlay"></div>
-          </div>
-
-          <div className="hero-content">
-            <div className="hero-badge animate-fadeIn">Garrafeira exclusiva</div>
-            <h1 className="hero-title animate-fadeIn">
-              Bem-vindo à <span className="text-gold">3G Wine</span>
-            </h1>
-            <p className="hero-subtitle animate-fadeIn">
-              Uma seleção premium de vinhos para os verdadeiros apreciadores
-            </p>
-            <div className="hero-buttons animate-fadeIn">
-              <Link href="/loja" className="btn btn-primary">
-                Explore a Nossa Seleção
-              </Link>
-              <Link href="/sobre" className="btn btn-outline">
-                Conheça a Nossa História
-              </Link>
+        {/* Nova Hero Section Reestruturada */}
+        <section className="hero-modern">
+          <div className="container hero-grid">
+            {/* Coluna Esquerda: Texto e Botões */}
+            <div className="hero-text-side">
+              <div className="hero-badge animate-fadeIn">Garrafeira exclusiva</div>
+              <h1 className="hero-title animate-fadeIn">
+                A Arte de Escolher <br />
+                <span className="text-gold logo-text-hero">3GWINE</span>
+              </h1>
+              <p className="hero-subtitle animate-fadeIn">
+                Vinhos premium seleccionados com paixão para os verdadeiros apreciadores.
+              </p>
+              <div className="hero-buttons animate-fadeIn">
+                <Link href="/loja" className="btn btn-primary">
+                  A Nossa Seleção
+                </Link>
+                <Link href="/sobre" className="btn btn-outline">
+                  A Nossa História
+                </Link>
+              </div>
             </div>
-          </div>
 
-          {/* Scroll Indicator */}
-          <div className="scroll-indicator">
-            <div className="scroll-mouse">
-              <div className="scroll-wheel"></div>
+            {/* Coluna Direita: Destaque da Semana */}
+            <div className="hero-highlight-side animate-fadeIn">
+              <div className="weekly-highlight-box">
+                <div className="highlight-label">Destaque da Semana</div>
+                <div className="highlight-frame">
+                  <div className="highlight-image-container">
+                    <Image
+                      src={weeklyHighlight?.weekly_highlight_image || weeklyHighlight?.image || "/images/products/douro-2018.png"}
+                      alt={weeklyHighlight?.name || "Destaque da Semana"}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      priority
+                    />
+                  </div>
+                  <div className="highlight-info">
+                    <h3>{weeklyHighlight?.name || "Vinho Premium"}</h3>
+                    <p>{weeklyHighlight?.description ? weeklyHighlight.description.substring(0, 50) + '...' : "Um clássico reinterpretado para os paladares mais exigentes."}</p>
+                    <Link href="/loja" className="btn-details">Ver Detalhes</Link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>

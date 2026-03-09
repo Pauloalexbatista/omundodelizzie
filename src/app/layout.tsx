@@ -3,7 +3,7 @@ import { CartProvider } from '@/context/CartContext';
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "3G Wine | Garrafeira exclusiva - Vinhos Premium",
+  title: "3GWINE | Garrafeira exclusiva - Vinhos Premium",
   description: "Descubra a nossa seleção exclusiva de vinhos premium. Qualidade, tradição e excelência em cada garrafa.",
   keywords: "vinhos, vinho premium, loja de vinhos, vinho português, garrafeira exclusiva",
 };

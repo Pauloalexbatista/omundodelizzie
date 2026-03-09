@@ -4,15 +4,17 @@
     left: 0;
     right: 0;
     z-index: var(--z-fixed);
-    background: rgba(10, 10, 10, 0.3);
+    background-color: #4A0E0E;
+    /* Bordeaux profundo inicial */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: all var(--transition-base);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .header-scrolled {
-    background: rgba(10, 10, 10, 0.95);
+    background: rgba(10, 10, 10, 0.98);
+    /* Transição para preto */
     box-shadow: var(--shadow-lg);
     border-bottom-color: rgba(212, 175, 55, 0.3);
 }
@@ -21,7 +23,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-sm) 0;
+    padding: var(--spacing-xs) 0;
     gap: var(--spacing-lg);
 }
 
@@ -34,26 +36,26 @@
 }
 
 .header-logo:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
 .logo-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0;
 }
 
 .logo-text {
-    font-family: var(--font-display);
+    font-family: var(--font-logo);
+    /* Marcellus */
     font-size: var(--text-3xl);
     font-weight: 900;
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-    letter-spacing: 2px;
+    color: var(--color-light);
+    line-height: normal;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
 }
 
 .logo-subtitle {

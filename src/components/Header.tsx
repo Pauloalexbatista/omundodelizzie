@@ -21,7 +21,7 @@ export default function Header() {
     }, []);
 
     const navLinks = [
-        { href: '/', label: 'Home' },
+        { href: '/vinho-virtual', label: 'VINHO VIRTUAL' },
         { href: '/loja', label: 'A Nossa Seleção' },
         { href: '/sobre', label: 'Sobre Nós' },
         { href: '/contactos', label: 'Contactos' },
@@ -34,7 +34,7 @@ export default function Header() {
                     {/* Logo */}
                     <Link href="/" className="header-logo">
                         <div className="logo-container">
-                            <span className="logo-text">3G Wine</span>
+                            <span className="logo-text">3GWINE</span>
                         </div>
                     </Link>
 

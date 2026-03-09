@@ -1,11 +1,11 @@
 @echo off
-REM Iniciar servidor de desenvolvimento 3G Wine automaticamente
+REM Iniciar servidor de desenvolvimento 3GWINE automaticamente
 echo ====================================
-echo   3G Wine - Iniciando Servidor...
+echo   3GWINE - Iniciando Servidor...
 echo ====================================
 echo.
 
-cd /d "C:\Users\paulo\.gemini\antigravity\playground\core-omega\PRJT_3D_Wine"
+cd /d "C:\Users\paulo\.gemini\antigravity\playground\core-omega\PRJT_3GWine"
 
 echo Diretorio: %CD%
 echo.

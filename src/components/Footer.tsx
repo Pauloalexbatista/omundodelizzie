@@ -79,7 +79,7 @@ export default function Footer() {
                     {/* Brand Section */}
                     <div className="footer-section">
                         <div className="footer-logo">
-                            <span className="logo-text">3G Wine</span>
+                            <span className="logo-text">3GWINE</span>
                         </div>
                         <p className="footer-tagline">Garrafeira exclusiva</p>
                         <p className="footer-description">

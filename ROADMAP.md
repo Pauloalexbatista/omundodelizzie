@@ -1,4 +1,4 @@
-# Roadmap - 3G Wine
+# Roadmap - 3GWINE
 
 Este documento regista as funcionalidades planeadas e o progresso do projeto.
 

@@ -43,6 +43,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     };
 
+    const updateQuantity = (productId: number, quantity: number) => {
+        if (quantity < 1) return;
+        setCart((prevCart) =>
+            prevCart.map((item) =>
+                item.id === productId ? { ...item, quantity } : item
+            )
+        );
+    };
+
     const clearCart = () => {
         setCart([]);
     };
@@ -56,6 +65,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 cart,
                 addToCart,
                 removeFromCart,
+                updateQuantity,
                 clearCart,
                 cartTotal,
                 cartCount,
