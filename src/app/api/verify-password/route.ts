@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
             // Cookie válido por 7 dias, só acessível pelo servidor (HttpOnly)
             response.cookies.set('site_access', 'granted', {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: false, // Temporariamente false para permitir acesso sem HTTPS/SSL no VPS
                 sameSite: 'lax',
                 maxAge: 60 * 60 * 24 * 7, // 7 dias
                 path: '/',
