@@ -37,6 +37,7 @@ RUN adduser -S nextjs -u 1001
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma ./prisma_backup
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/package.json ./package.json
 
@@ -45,9 +46,14 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Ensure scripts are executable
+# Ensure scripts are executable and directories are writable
 USER root
-RUN chmod +x scripts/start.sh
+RUN mkdir -p public/images/products && \
+    chown -R nextjs:nodejs public/images/products && \
+    chown -R nextjs:nodejs prisma && \
+    chown -R nextjs:nodejs prisma_backup && \
+    chmod +x scripts/start.sh
+
 USER nextjs
 
 EXPOSE 3000
