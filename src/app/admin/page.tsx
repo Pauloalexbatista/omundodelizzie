@@ -9,6 +9,7 @@ import {
     updateProduct, 
     deleteProduct 
 } from '@/app/actions/products';
+import { getSafeImageSrc } from '@/lib/utils';
 
 interface Product {
     id: string;
@@ -289,10 +290,6 @@ export default function AdminPage() {
         }
     };
 
-    const getSafeImageSrc = (src: string | null | undefined) => {
-        if (!src) return '/images/products/douro-2018.png';
-        return src;
-    };
 
     if (isAuthenticated === null) {
         return (

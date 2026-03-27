@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getWeeklyHighlight, getFeaturedProducts } from '@/app/actions/products';
+import { getSafeImageSrc } from '@/lib/utils';
 import './page.css';
 
 export default function Home() {
@@ -66,7 +67,7 @@ export default function Home() {
                 <div className="highlight-frame">
                   <div className="highlight-image-container">
                                         <Image
-                                            src={weeklyHighlight?.weekly_highlight_image || "/images/handmade-hero.png"}
+                                            src={getSafeImageSrc(weeklyHighlight?.weekly_highlight_image || weeklyHighlight?.image)}
                                             alt={weeklyHighlight?.name || "Destaque da Semana"}
                                             fill
                                             style={{ objectFit: 'cover' }}
@@ -145,7 +146,7 @@ export default function Home() {
                     <div className="product-badge">Destaque</div>
                     <div className="product-image-placeholder">
                       <Image
-                        src={product.image || "/images/products/fralda-exemplo.jpg"}
+                        src={getSafeImageSrc(product.image)}
                         alt={product.name}
                         fill
                         style={{ objectFit: 'contain', padding: '1rem' }}

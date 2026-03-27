@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
 import { getAllProducts } from '@/app/actions/products';
+import { getSafeImageSrc } from '@/lib/utils';
 import './page.css';
 
 interface Product {
@@ -160,7 +161,7 @@ export default function LojaPage() {
                                             )}
                                             <div className="product-image-placeholder">
                                                 <Image
-                                                    src={product.image || '/logo.png'}
+                                                    src={getSafeImageSrc(product.image)}
                                                     alt={product.name}
                                                     fill
                                                     style={{ objectFit: 'contain', padding: '1rem' }}
@@ -224,7 +225,7 @@ export default function LojaPage() {
                         <div className="modal-body">
                             <div className="modal-image-container">
                                 <Image
-                                    src={selectedProduct.image || '/logo.png'}
+                                    src={getSafeImageSrc(selectedProduct.image)}
                                     alt={selectedProduct.name}
                                     fill
                                     style={{ objectFit: 'contain', padding: '2rem' }}
