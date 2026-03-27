@@ -1,6 +1,6 @@
 .wrapper {
     min-height: 100vh;
-    background: url('/images/access-bg.png') no-repeat center center fixed;
+    background: url('/images/lizzie-bg.png') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     align-items: center;
@@ -15,7 +15,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(255, 133, 161, 0.2);
+    backdrop-filter: blur(2px);
     z-index: 1;
 }
 
@@ -26,33 +27,24 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 3rem;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    max-width: 400px;
+    padding: 4rem 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 32px;
+    box-shadow: 0 8px 32px 0 rgba(255, 133, 161, 0.2);
+    max-width: 450px;
     width: 90%;
-    animation: fadeIn 1s ease-out;
-}
-
-.logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    color: #fff;
-    letter-spacing: 0.2rem;
-    margin-bottom: 0.5rem;
-    font-weight: 300;
+    animation: fadeIn 1.2s ease-out;
 }
 
 .subtitle {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.05rem;
+    font-weight: 500;
 }
 
 .form {
@@ -60,7 +52,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .inputWrapper {
@@ -70,47 +62,56 @@
 
 .input {
     width: 100%;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
     color: #fff;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     text-align: center;
-    letter-spacing: 0.3rem;
+    letter-spacing: 0.2rem;
     outline: none;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.1rem;
 }
 
 .input:focus {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #fff;
+    transform: scale(1.02);
 }
 
 .inputError {
     border-color: #ff4d4d;
-    background: rgba(255, 77, 77, 0.05);
+    background: rgba(255, 77, 77, 0.1);
 }
 
 .error {
-    color: #ff4d4d;
+    color: #fff;
+    background: rgba(220, 38, 38, 0.6);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
     font-size: 0.85rem;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     animation: shake 0.4s ease-in-out;
 }
 
 .footer {
     position: absolute;
     bottom: 2rem;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
     z-index: 2;
+    font-weight: 500;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes shake {

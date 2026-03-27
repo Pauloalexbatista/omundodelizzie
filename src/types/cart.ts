@@ -1,12 +1,11 @@
 export interface Product {
-    id: number;
+    id: string;
     name: string;
     type: string;
-    year?: number;
-    region?: string;
     price: number;
-    description?: string;
-    featured?: boolean;
+    description?: string | null;
+    is_weekly_highlight?: boolean;
+    weekly_highlight_image?: string;
     image: string;
     quantity?: number;
 }
@@ -14,8 +13,8 @@ export interface Product {
 export interface CartContextType {
     cart: Product[];
     addToCart: (product: Product) => void;
-    removeFromCart: (productId: number) => void;
-    updateQuantity: (productId: number, quantity: number) => void;
+    removeFromCart: (productId: string) => void;
+    updateQuantity: (productId: string, quantity: number) => void;
     clearCart: () => void;
     cartTotal: number;
     cartCount: number;

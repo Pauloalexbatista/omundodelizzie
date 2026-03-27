@@ -4,18 +4,19 @@
     left: 0;
     right: 0;
     z-index: var(--z-fixed);
-    background: rgba(10, 10, 10, 0.85);
+    background: var(--gradient-hero);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     transition: all var(--transition-base);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .header-scrolled {
-    background: rgba(10, 10, 10, 0.98);
+    background: var(--gradient-hero);
     /* Transição para preto */
-    box-shadow: var(--shadow-lg);
-    border-bottom-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+    opacity: 0.98;
 }
 
 .header-content {
@@ -50,7 +51,8 @@
     /* Marcellus */
     font-size: var(--text-3xl);
     font-weight: 900;
-    color: var(--color-secondary); /* Restored to Yellow */
+    color: var(--color-light) !important; 
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     line-height: normal;
     letter-spacing: 1px;
     display: flex;

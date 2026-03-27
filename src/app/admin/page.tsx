@@ -1,22 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
+import { 
+    getAllProducts, 
+    createProduct, 
+    updateProduct, 
+    deleteProduct 
+} from '@/app/actions/products';
 
 interface Product {
-    id: number;
+    id: string;
     name: string;
     type: string;
-    region: string;
-    year: number;
     price: number;
-    description: string;
-    featured: boolean;
-    image: string;
-    is_weekly_highlight?: boolean;
-    weekly_highlight_image?: string;
+    description: string | null;
+    is_weekly_highlight: boolean;
+    weekly_highlight_image: string | null;
+    image: string | null;
 }
 
 export default function AdminPage() {
@@ -24,7 +26,7 @@ export default function AdminPage() {
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState<'list' | 'form'>('list');
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // null = checking, false = prompt, true = access
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -32,20 +34,20 @@ export default function AdminPage() {
     // Image Selection State
     const [availableImages, setAvailableImages] = useState<string[]>([]);
     const [showImageSelector, setShowImageSelector] = useState(false);
+    const [selectorTarget, setSelectorTarget] = useState<'image' | 'weekly_highlight_image'>('image');
 
     // Form State
     const [formData, setFormData] = useState<Partial<Product>>({
         name: '',
-        type: 'Tinto',
-        region: '',
-        year: new Date().getFullYear(),
+        type: 'Bebé',
         price: 0,
         description: '',
-        featured: false,
-        image: '',
         is_weekly_highlight: false,
+        image: '',
         weekly_highlight_image: ''
     });
+
+    const types = ['Bebé', 'Batismo', 'Decoração', 'Outros'];
 
     useEffect(() => {
         checkAuth();
@@ -55,8 +57,6 @@ export default function AdminPage() {
 
     async function checkAuth() {
         try {
-            // No frontend, apenas verificamos se conseguimos ler algo restrito ou se temos o cookie (simulado via API)
-            // Para simplicidade total, vamos bater num endpoint que verifica o cookie
             const res = await fetch('/api/verify-password', {
                 method: 'POST',
                 body: JSON.stringify({ checkOnly: true })
@@ -99,16 +99,11 @@ export default function AdminPage() {
     async function fetchProducts() {
         try {
             setLoading(true);
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .order('id', { ascending: true });
-
-            if (error) throw error;
-            if (data) setProducts(data);
+            const data = await getAllProducts();
+            if (data) setProducts(data as Product[]);
         } catch (error) {
             console.error('Erro ao buscar produtos:', error);
-            alert('Erro ao carregar produtos do Supabase');
+            alert('Erro ao carregar produtos da base de dados local.');
         } finally {
             setLoading(false);
         }
@@ -126,17 +121,11 @@ export default function AdminPage() {
         }
     }
 
-    async function handleDelete(id: number) {
+    async function handleDelete(id: string) {
         if (!confirm('Tem a certeza que deseja apagar este produto?')) return;
 
         try {
-            const { error } = await supabase
-                .from('products')
-                .delete()
-                .eq('id', id);
-
-            if (error) throw error;
-
+            await deleteProduct(id);
             setProducts(products.filter(p => p.id !== id));
             alert('Produto removido com sucesso!');
         } catch (error) {
@@ -149,7 +138,6 @@ export default function AdminPage() {
         setEditingProduct(product);
         setFormData(product);
         setView('form');
-        // Refresh images when opening form
         fetchImages();
     }
 
@@ -157,28 +145,30 @@ export default function AdminPage() {
         setEditingProduct(null);
         setFormData({
             name: '',
-            type: 'Tinto',
-            region: '',
-            year: new Date().getFullYear(),
+            type: 'Bebé',
             price: 0,
             description: '',
-            featured: false,
-            image: ''
+            is_weekly_highlight: false,
+            image: '',
+            weekly_highlight_image: ''
         });
         setView('form');
-        // Refresh images when opening form
         fetchImages();
     }
 
+    function openSelector(target: 'image' | 'weekly_highlight_image') {
+        setSelectorTarget(target);
+        setShowImageSelector(true);
+    }
+
     function handleSelectImage(imagePath: string) {
-        setFormData({ ...formData, image: imagePath });
+        setFormData({ ...formData, [selectorTarget]: imagePath });
         setShowImageSelector(false);
     }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        // Validate Image
         if (!formData.image) {
             alert('Por favor selecione uma imagem.');
             return;
@@ -186,21 +176,10 @@ export default function AdminPage() {
 
         try {
             if (editingProduct) {
-                // Update
-                const { error } = await supabase
-                    .from('products')
-                    .update(formData)
-                    .eq('id', editingProduct.id);
-
-                if (error) throw error;
+                await updateProduct(editingProduct.id, formData);
                 alert('Produto atualizado com sucesso!');
             } else {
-                // Create
-                const { error } = await supabase
-                    .from('products')
-                    .insert([formData]);
-
-                if (error) throw error;
+                await createProduct(formData as any);
                 alert('Produto criado com sucesso!');
             }
 
@@ -212,7 +191,6 @@ export default function AdminPage() {
         }
     }
 
-    // Styles for the admin page
     const styles = {
         pageContainer: {
             padding: '2rem 1rem',
@@ -304,49 +282,14 @@ export default function AdminPage() {
         }
     };
 
-    // Helper to safely get image source
-    const getSafeImageSrc = (src: string | undefined) => {
-        if (!src) return '/images/products/douro-2018.png'; // Fallback
-        if (src.startsWith('/') || src.startsWith('http')) return src;
-        return `/images/loja/${src}`; // Assume local if simplistic
-    };
-
-    // Filter State
-    const [filterType, setFilterType] = useState('Todos');
-    const types = ['Todos', 'Tinto', 'Branco', 'Rosé', 'Espumante', 'Outros'];
-
-    // Filtered Products
-    const filteredProducts = products.filter(product => {
-        if (filterType === 'Todos') return true;
-        return product.type === filterType;
-    });
-
-
-    // Style for the authentication prompt
-    const authStyles = {
-        overlay: {
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#0a0a0a',
-            padding: '2rem'
-        },
-        card: {
-            maxWidth: '400px',
-            width: '100%',
-            backgroundColor: '#1a1a1a',
-            padding: '3rem',
-            borderRadius: '12px',
-            border: '1px solid #333',
-            textAlign: 'center' as const,
-            boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
-        }
+    const getSafeImageSrc = (src: string | null | undefined) => {
+        if (!src) return '/images/products/douro-2018.png';
+        return src;
     };
 
     if (isAuthenticated === null) {
         return (
-            <div style={authStyles.overlay}>
+            <div className="min-h-screen flex items-center justify-center bg-[#fdf2f8]">
                 <div style={{ color: 'var(--color-primary)', fontSize: '1.2rem' }}>A verificar acesso...</div>
             </div>
         );
@@ -354,56 +297,36 @@ export default function AdminPage() {
 
     if (!isAuthenticated) {
         return (
-            <div style={authStyles.overlay}>
-                <div style={authStyles.card}>
-                    <div style={{ marginBottom: '2rem' }}>
-                        <span style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#fff', letterSpacing: '4px' }}>
-                            <span style={{ color: 'var(--color-primary)' }}>3</span>GWINE
+            <div className="min-h-screen flex items-center justify-center bg-[#fdf2f8] p-8">
+                <div className="max-w-[400px] w-full bg-white p-12 rounded-2xl border border-gray-100 text-center shadow-xl">
+                    <div className="mb-8">
+                        <span className="text-3xl font-bold tracking-widest text-[#d4a373] logo-text">
+                            LIZZIE <span className="text-[#ff85a1]">STORE</span>
                         </span>
                     </div>
                     
-                    <h2 style={{ color: 'var(--color-primary)', marginBottom: '1.5rem', fontFamily: 'Marcellus, serif' }}>Portal do Administrador</h2>
-                    <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.9rem' }}>
-                        Introduza a chave de acesso para gerir a garrafeira.
+                    <h2 className="text-[#ff85a1] mb-6 text-xl font-serif">Área de Administração</h2>
+                    <p className="text-gray-500 mb-8 text-sm">
+                        Introduza a chave de acesso para gerir os artigos.
                     </p>
 
                     <form onSubmit={handleLogin}>
                         <input
                             type="password"
-                            placeholder="Password de Acesso"
+                            placeholder="Palavra-passe"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: '#222',
-                                border: '1px solid #444',
-                                borderRadius: '6px',
-                                color: '#fff',
-                                marginBottom: '1.5rem',
-                                textAlign: 'center',
-                                outline: 'none'
-                            }}
+                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg mb-6 text-center outline-none focus:ring-2 focus:ring-[#ff85a1]/20"
                             autoFocus
                         />
-                        {authError && <p style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1.5rem' }}>{authError}</p>}
+                        {authError && <p className="text-red-500 text-xs mb-6">{authError}</p>}
                         
                         <button 
                             type="submit" 
                             disabled={isAuthenticating}
-                            style={{
-                                width: '100%',
-                                padding: '14px',
-                                backgroundColor: 'var(--color-primary)',
-                                color: '#000',
-                                fontWeight: 'bold',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: isAuthenticating ? 'wait' : 'pointer',
-                                transition: 'transform 0.2s'
-                            }}
+                            className="w-full p-3 bg-[#ff85a1] text-white font-bold rounded-lg cursor-pointer hover:bg-[#ff6b8f] transition-colors"
                         >
-                            {isAuthenticating ? 'A entrar...' : 'Entrar na Garrafeira'}
+                            {isAuthenticating ? 'A entrar...' : 'Entrar'}
                         </button>
                     </form>
                 </div>
@@ -416,27 +339,20 @@ export default function AdminPage() {
             <div style={styles.pageContainer}>
                 <button
                     onClick={() => setView('list')}
-                    style={{
-                        marginBottom: '1.5rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        color: 'var(--color-gray-700)',
-                        cursor: 'pointer'
-                    }}
+                    className="flex items-center gap-2 mb-6 text-gray-600 hover:text-primary transition-colors"
                 >
                     ← Voltar à Lista
                 </button>
 
-                <h1 className="text-3xl" style={{ marginBottom: '2rem', color: 'var(--color-primary)' }}>
-                    {editingProduct ? 'Editar Produto' : 'Novo Produto'}
+                <h1 className="text-3xl mb-8 text-primary">
+                    {editingProduct ? 'Editar Artigo' : 'Novo Artigo'}
                 </h1>
 
                 <div style={styles.card}>
                     <form onSubmit={handleSubmit}>
                         <div style={styles.formGrid}>
                             <div style={styles.formGroup}>
-                                <label style={styles.label}>Nome</label>
+                                <label style={styles.label}>Nome do Artigo</label>
                                 <input
                                     type="text"
                                     required
@@ -446,39 +362,14 @@ export default function AdminPage() {
                                 />
                             </div>
                             <div style={styles.formGroup}>
-                                <label style={styles.label}>Tipo</label>
+                                <label style={styles.label}>Categoria</label>
                                 <select
                                     className="input"
                                     value={formData.type}
                                     onChange={e => setFormData({ ...formData, type: e.target.value })}
                                 >
-                                    <option>Tinto</option>
-                                    <option>Branco</option>
-                                    <option>Rosé</option>
-                                    <option>Espumante</option>
-                                    <option>Outros</option>
+                                    {types.map(t => <option key={t}>{t}</option>)}
                                 </select>
-                            </div>
-                        </div>
-
-                        <div style={styles.formGrid}>
-                            <div style={styles.formGroup}>
-                                <label style={styles.label}>Região</label>
-                                <input
-                                    type="text"
-                                    className="input"
-                                    value={formData.region}
-                                    onChange={e => setFormData({ ...formData, region: e.target.value })}
-                                />
-                            </div>
-                            <div style={styles.formGroup}>
-                                <label style={styles.label}>Ano</label>
-                                <input
-                                    type="number"
-                                    className="input"
-                                    value={formData.year}
-                                    onChange={e => setFormData({ ...formData, year: parseInt(e.target.value) })}
-                                />
                             </div>
                         </div>
 
@@ -499,28 +390,28 @@ export default function AdminPage() {
                             <textarea
                                 className="input textarea"
                                 rows={3}
-                                value={formData.description}
+                                value={formData.description || ''}
                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
                             />
                         </div>
 
                         <div style={styles.formGroup}>
-                            <label style={styles.label}>Imagem do Produto</label>
+                            <label style={styles.label}>Imagem do Artigo</label>
                             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                 <input
                                     type="text"
                                     readOnly
                                     className="input"
-                                    value={formData.image}
-                                    placeholder="Nenhuma imagem selecionada"
+                                    value={formData.image || ''}
+                                    placeholder="Selecione uma imagem"
                                     style={{ flex: 1, backgroundColor: '#f9fafb' }}
                                 />
                                 <button
                                     type="button"
                                     className="btn btn-outline"
-                                    onClick={() => setShowImageSelector(true)}
+                                    onClick={() => openSelector('image')}
                                 >
-                                    Selecionar Imagem
+                                    Abrir Galeria
                                 </button>
                             </div>
                             {formData.image && (
@@ -533,63 +424,47 @@ export default function AdminPage() {
                                     />
                                 </div>
                             )}
-                            <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                                Apenas imagens na pasta <code>public/images/loja</code>
-                            </p>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <input
-                                    type="checkbox"
-                                    id="featured"
-                                    style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }}
-                                    checked={formData.featured}
-                                    onChange={e => setFormData({ ...formData, featured: e.target.checked })}
-                                />
-                                <label htmlFor="featured" style={{ fontSize: '0.875rem', color: 'var(--color-dark)' }}>
-                                    Destacar na Loja
-                                </label>
-                            </div>
-
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div className="flex gap-8 mb-8">
+                            <div className="flex items-center">
                                 <input
                                     type="checkbox"
                                     id="is_weekly_highlight"
-                                    style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }}
+                                    className="w-4 h-4 mr-2"
                                     checked={formData.is_weekly_highlight}
                                     onChange={e => setFormData({ ...formData, is_weekly_highlight: e.target.checked })}
                                 />
-                                <label htmlFor="is_weekly_highlight" style={{ fontSize: '0.875rem', color: 'var(--color-dark)', fontWeight: 'bold' }}>
-                                    Destaque da Semana (Página Principal)
+                                <label htmlFor="is_weekly_highlight" className="text-sm font-bold text-gray-800">
+                                    Destaque da Semana ✨
                                 </label>
                             </div>
                         </div>
 
                         {formData.is_weekly_highlight && (
                             <div style={styles.formGroup}>
-                                <label style={styles.label}>Fotografia de Destaque (Fundo Transparente Recomendado)</label>
+                                <label style={styles.label}>Fotografia de Destaque (Alta Resolução)</label>
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                     <input
                                         type="text"
                                         readOnly
                                         className="input"
-                                        value={formData.weekly_highlight_image}
-                                        placeholder="Selecione a foto especial de destaque"
+                                        value={formData.weekly_highlight_image || ''}
+                                        placeholder="Selecione a foto de destaque"
                                         style={{ flex: 1, backgroundColor: '#fdfaea' }}
                                     />
                                     <button
                                         type="button"
                                         className="btn btn-outline"
-                                        onClick={() => setShowImageSelector(true)} // Reutiliza o selector
+                                        onClick={() => openSelector('weekly_highlight_image')}
                                     >
-                                        Escolher Foto
+                                        Mudar Foto
                                     </button>
                                 </div>
                             </div>
                         )}
 
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                        <div className="flex justify-end gap-4">
                             <button
                                 type="button"
                                 onClick={() => setView('list')}
@@ -601,7 +476,7 @@ export default function AdminPage() {
                                 type="submit"
                                 className="btn btn-primary"
                             >
-                                Salvar Produto
+                                Salvar Alterações
                             </button>
                         </div>
                     </form>
@@ -610,27 +485,24 @@ export default function AdminPage() {
                     {showImageSelector && (
                         <div style={styles.modalOverlay} onClick={() => setShowImageSelector(false)}>
                             <div style={styles.modalContent} onClick={e => e.stopPropagation()}>
-                                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>Selecionar Imagem</h3>
-                                <div style={{ fontSize: '0.875rem', color: '#555', marginBottom: '1rem' }}>
-                                    Estas são as imagens encontradas na pasta <code>public/images/loja</code>.
+                                <h3 className="text-xl font-bold mb-4">Galeria de Imagens</h3>
+                                <div className="text-sm text-gray-500 mb-6">
+                                    Imagens disponíveis em <code>public/images/products</code>.
                                 </div>
 
                                 {availableImages.length === 0 ? (
-                                    <p>Nenhuma imagem encontrada nesta pasta.</p>
+                                    <p>Nenhuma imagem encontrada.</p>
                                 ) : (
                                     <div style={styles.imageGrid}>
                                         {availableImages.map((img, idx) => (
                                             <div
                                                 key={idx}
                                                 onClick={() => handleSelectImage(img)}
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    border: formData.image === img ? '2px solid var(--color-primary)' : '1px solid #eee',
-                                                    borderRadius: '4px',
-                                                    overflow: 'hidden',
-                                                    aspectRatio: '1',
-                                                    position: 'relative'
-                                                }}
+                                                className={`cursor-pointer border-2 rounded-lg overflow-hidden aspect-square relative transition-all ${
+                                                    (selectorTarget === 'image' ? formData.image : formData.weekly_highlight_image) === img 
+                                                    ? 'border-primary' 
+                                                    : 'border-gray-100 hover:border-gray-300'
+                                                }`}
                                             >
                                                 <Image
                                                     src={img}
@@ -643,7 +515,7 @@ export default function AdminPage() {
                                     </div>
                                 )}
 
-                                <div style={{ marginTop: '2rem', textAlign: 'right' }}>
+                                <div className="mt-8 text-right">
                                     <button
                                         className="btn btn-outline"
                                         onClick={() => setShowImageSelector(false)}
@@ -661,76 +533,53 @@ export default function AdminPage() {
 
     return (
         <div style={styles.pageContainer}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', gap: '2rem', alignItems: 'baseline' }}>
-                    <h1 className="text-3xl" style={{ color: 'var(--color-primary)' }}>Admin - Produtos</h1>
-                    <Link href="/admin/encomendas" style={{ fontSize: '1.1rem', color: '#666', textDecoration: 'none', fontWeight: 500 }}>
-                        📦 Gestão de Encomendas
-                    </Link>
+            <div className="flex justify-between items-center mb-8">
+                <div className="flex gap-8 items-baseline">
+                    <h1 className="text-3xl text-primary font-serif">Lizzie Admin</h1>
                 </div>
-                <Link href="/loja" className="btn btn-outline">
-                    Voltar à Loja
-                </Link>
+                <div className="flex gap-4">
+                    <Link href="/loja" className="btn btn-outline">
+                        Ver Loja
+                    </Link>
+                    <button
+                        onClick={handleCreate}
+                        className="btn btn-primary"
+                    >
+                        + Novo Artigo
+                    </button>
+                </div>
             </div>
 
             <div style={styles.card}>
-                <div style={styles.header}>
-                    <h2 className="text-xl">Produtos na Loja</h2>
-
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <select
-                            className="input"
-                            style={{ padding: '0.5rem', width: 'auto' }}
-                            value={filterType}
-                            onChange={(e) => setFilterType(e.target.value)}
-                        >
-                            {types.map(type => (
-                                <option key={type} value={type}>{type}</option>
-                            ))}
-                        </select>
-                        <button
-                            onClick={handleCreate}
-                            className="btn btn-primary"
-                        >
-                            + Adicionar Novo
-                        </button>
-                    </div>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Catálogo de Artigos</h2>
                 </div>
 
                 {loading ? (
-                    <div className="text-center" style={{ padding: '3rem 0' }}>
-                        <div className="animate-spin" style={{
-                            width: '3rem', height: '3rem',
-                            border: '3px solid var(--color-gray-200)',
-                            borderTopColor: 'var(--color-primary)',
-                            borderRadius: '50%',
-                            margin: '0 auto'
-                        }}></div>
-                        <p style={{ marginTop: '1rem', color: 'var(--color-gray-500)' }}>A carregar produtos...</p>
+                    <div className="text-center py-12">
+                        <div className="animate-spin w-12 h-12 border-4 border-gray-100 border-t-primary rounded-full mx-auto mb-4"></div>
+                        <p className="text-gray-500">A carregar...</p>
                     </div>
-                ) : filteredProducts.length === 0 ? (
-                    <div className="text-center" style={{ padding: '3rem 0', backgroundColor: 'var(--color-gray-50)', borderRadius: 'var(--radius-lg)' }}>
-                        <p style={{ color: 'var(--color-gray-500)' }}>Nenhum produto encontrado.</p>
-                        {filterType !== 'Todos' && (
-                            <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>Tente mudar o filtro ou adicionar um novo produto.</p>
-                        )}
-                        <button onClick={handleCreate} style={{ marginTop: '1rem', color: 'var(--color-primary)', textDecoration: 'underline' }}>
-                            Criar produto
+                ) : products.length === 0 ? (
+                    <div className="text-center py-12 bg-gray-50 rounded-xl">
+                        <p className="text-gray-500 mb-4">Catálogo vazio.</p>
+                        <button onClick={handleCreate} className="text-primary underline font-medium">
+                            Criar o primeiro artigo
                         </button>
                     </div>
                 ) : (
-                    <div style={{ overflowX: 'auto' }}>
+                    <div className="overflow-x-auto">
                         <table style={styles.table}>
                             <thead>
                                 <tr>
-                                    <th style={styles.th}>Imagem</th>
-                                    <th style={styles.th}>Nome</th>
+                                    <th style={styles.th}>Artigo</th>
+                                    <th style={styles.th}>Nome e Categoria</th>
                                     <th style={styles.th}>Preço</th>
                                     <th style={{ ...styles.th, textAlign: 'right' }}>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredProducts.map((product) => (
+                                {products.map((product) => (
                                     <tr key={product.id}>
                                         <td style={styles.td}>
                                             <div style={styles.imageContainer}>
@@ -743,20 +592,20 @@ export default function AdminPage() {
                                             </div>
                                         </td>
                                         <td style={styles.td}>
-                                            <div style={{ fontWeight: 600 }}>{product.name}</div>
-                                            <div style={{ fontSize: '0.8rem', color: 'var(--color-secondary)', textTransform: 'uppercase' }}>{product.type}</div>
+                                            <div className="font-bold text-gray-800">{product.name}</div>
+                                            <div className="text-xs text-secondary font-bold uppercase">{product.type}</div>
                                         </td>
-                                        <td style={styles.td}>€{product.price}</td>
+                                        <td style={styles.td}>€{product.price.toFixed(2)}</td>
                                         <td style={{ ...styles.td, textAlign: 'right' }}>
                                             <button
                                                 onClick={() => handleEdit(product)}
-                                                style={{ color: '#4f46e5', fontWeight: 500, marginRight: '1rem' }}
+                                                className="text-[#ff85a1] font-bold mr-4 hover:underline"
                                             >
                                                 Editar
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(product.id)}
-                                                style={{ color: '#ef4444', fontWeight: 500 }}
+                                                className="text-gray-400 hover:text-red-500 transition-colors"
                                             >
                                                 Apagar
                                             </button>

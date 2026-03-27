@@ -16,10 +16,10 @@
 }
 
 .contactos-title {
-    font-size: clamp(2rem, 4vw, 3rem); /* Slightly smaller */
-    color: #4a041c; /* Traditional wine color */
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--color-dark);
     margin-bottom: 0.5rem;
-    font-family: 'Marcellus', serif;
+    font-family: var(--font-display);
     letter-spacing: 1px;
 }
 
@@ -43,16 +43,13 @@
     background: #fcfcfc;
 }
 
-.contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Balanced boxes */
-    gap: 2.5rem;
-    align-items: stretch; /* Stretch to keep equal height */
+.contact-container-centered {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 /* Premium Light Wrappers */
-.contact-form-wrapper,
-.contact-info-wrapper {
+.contact-form-wrapper {
     background: #ffffff;
     padding: 3rem;
     border-radius: 20px;

@@ -1,43 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&family=Marcellus&family=Cinzel:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* ============================================
-   Design Tokens - 3G Wine Brand System
+   Design Tokens - O Mundo de Lizzie Brand System
    ============================================ */
 
 :root {
-  /* Brand Colors */
-  --color-primary: #8B1538;
-  /* Bordeaux Wine */
-  --color-secondary: #D4AF37;
-  /* Luxurious Gold */
-  --color-dark: #0A0A0A;
-  /* Rich Black */
-  --color-light: #FFFFFF;
-  /* Pure White */
-  --color-accent: #C41E3A;
-  /* Deep Crimson */
-  --color-burgundy-dark: #5C0E20;
+  /* Brand Colors (Pastels) */
+  --color-primary: #FF9FB0;    /* Pink */
+  --color-secondary: #7EC8E3;  /* Baby Blue */
+  --color-yellow: #FFE66D;     /* Yellow */
+  --color-dark: #2C2C2C;       /* Soft Black */
+  --color-light: #FFFFFF;      /* Pure White */
+  --color-off-white: #FAFAFA;
+  --color-accent: #FF7A94;     /* Darker Pink */
 
   /* Neutral Palette */
   --color-gray-50: #F9FAFB;
   --color-gray-100: #F3F4F6;
   --color-gray-200: #E5E7EB;
   --color-gray-300: #D1D5DB;
-  --color-gray-700: #374151;
-  --color-gray-800: #1F2937;
-  --color-gray-900: #111827;
+  --color-gray-700: #4B5563;
+  --color-gray-800: #374151;
+  --color-gray-900: #1F2937;
 
   /* Gradients */
-  --gradient-hero: linear-gradient(135deg, #0A0A0A 0%, #8B1538 50%, #5C0E20 100%);
-  --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
-  --gradient-overlay: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.8) 100%);
-  --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  --gradient-hero: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 50%, var(--color-yellow) 100%);
+  --gradient-soft: linear-gradient(180deg, var(--color-light) 0%, var(--color-off-white) 100%);
+  --gradient-overlay: linear-gradient(180deg, rgba(44, 44, 44, 0) 0%, rgba(44, 44, 44, 0.6) 100%);
 
   /* Typography */
-  --font-display: 'Playfair Display', serif;
-  --font-body: 'Lato', sans-serif;
-  --font-logo: 'Marcellus', serif;
+  --font-display: 'Quicksand', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-logo: 'Quicksand', sans-serif;
 
   /* Font Sizes */
   --text-xs: 0.75rem;

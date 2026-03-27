@@ -5,27 +5,28 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getWeeklyHighlight, getFeaturedProducts } from '@/app/actions/products';
 import './page.css';
 
 export default function Home() {
   const [weeklyHighlight, setWeeklyHighlight] = useState<any>(null);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
 
   useEffect(() => {
-    async function fetchWeeklyHighlight() {
+    async function fetchData() {
       try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('is_weekly_highlight', true)
-          .maybeSingle();
+        const [highlight, products] = await Promise.all([
+          getWeeklyHighlight(),
+          getFeaturedProducts(3)
+        ]);
 
-        if (data) setWeeklyHighlight(data);
+        if (highlight) setWeeklyHighlight(highlight);
+        if (products) setFeaturedProducts(products);
       } catch (err) {
-        console.error("Erro ao carregar destaque:", err);
+        console.error("Erro ao carregar dados:", err);
       }
     }
-    fetchWeeklyHighlight();
+    fetchData();
   }, []);
 
   return (
@@ -35,35 +36,26 @@ export default function Home() {
       <main className="home-page">
         {/* Nova Hero Section Reestruturada com Fundo Total */}
         <section className="hero-modern-redesign">
-          <div className="hero-background">
-            <Image
-              src="/images/brand/quinta-hero-bg.png"
-              alt="Rustic Vineyard Background"
-              fill
-              priority
-              style={{ objectFit: 'cover' }}
-              quality={100}
-            />
-            <div className="hero-overlay-redesign"></div>
-          </div>
+          <div className="hero-overlay-redesign"></div>
           
           <div className="container hero-grid-redesign">
             {/* Coluna Esquerda: Texto e Botões */}
             <div className="hero-text-side">
-              <div className="hero-badge animate-fadeIn">Garrafeira exclusiva</div>
-              <h1 className="hero-title animate-fadeIn">
-                A Arte de Escolher <br />
-                <span className="text-gold logo-text-hero"><span className="logo-3">3</span>GWINE</span>
+              <div className="hero-badge animate-fadeIn">Trabalhos Manuais Únicos</div>
+              <h1 className="hero-title animate-fadeIn flex items-center gap-4">
+                O Mundo de <br />
+                <span className="text-gold logo-text-hero">Lizzie</span>
+                <img src="/images/crown-icon.png" alt="Crown" className="hero-crown-icon" />
               </h1>
               <p className="hero-subtitle animate-fadeIn">
-                Vinhos premium seleccionados com paixão para os verdadeiros apreciadores.
+                Personalização de artigos feitos à mão com amor e dedicação para todas as ocasiões. ✨
               </p>
               <div className="hero-buttons animate-fadeIn">
                 <Link href="/loja" className="btn btn-primary">
-                  A Nossa Seleção
+                  Ver Loja
                 </Link>
                 <Link href="/sobre" className="btn btn-outline-white">
-                  A Nossa História
+                  Sobre Mim
                 </Link>
               </div>
             </div>
@@ -75,7 +67,7 @@ export default function Home() {
                 <div className="highlight-frame">
                   <div className="highlight-image-container">
                     <Image
-                      src={weeklyHighlight?.weekly_highlight_image || weeklyHighlight?.image || "/images/products/douro-2018.png"}
+                      src={weeklyHighlight?.weekly_highlight_image || weeklyHighlight?.image || "/images/products/fralda-exemplo.jpg"}
                       alt={weeklyHighlight?.name || "Destaque da Semana"}
                       fill
                       style={{ objectFit: 'contain' }}
@@ -83,8 +75,8 @@ export default function Home() {
                     />
                   </div>
                   <div className="highlight-info">
-                    <h3>{weeklyHighlight?.name || "Vinho Premium"}</h3>
-                    <p>{weeklyHighlight?.description ? weeklyHighlight.description.substring(0, 50) + '...' : "Um clássico reinterpretado para os paladares mais exigentes."}</p>
+                    <h3>{weeklyHighlight?.name || "Artigo Especial"}</h3>
+                    <p>{weeklyHighlight?.description ? weeklyHighlight.description.substring(0, 50) + '...' : "Uma peça única feita à mão com carinho."}</p>
                     <Link href="/loja" className="btn-details">Ver Detalhes</Link>
                   </div>
                 </div>
@@ -100,91 +92,72 @@ export default function Home() {
               <h2 className="section-title">Destaques</h2>
               <div className="divider-gold"></div>
               <p className="section-subtitle">
-                Os nossos vinhos mais prestigiados e procurados
+                As peças mais queridas e recentes da nossa coleção
               </p>
             </div>
 
             <div className="products-grid">
-              {/* Product 1 */}
-              <div className="product-card">
-                <div className="product-image-wrapper">
-                  <div className="product-badge">Novo</div>
-                  <div className="product-image-placeholder">
-                    <Image
-                      src="/images/products/douro-2018.png"
-                      alt="Reserva do Douro 2018"
-                      fill
-                      style={{ objectFit: 'contain', padding: '1rem' }}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
+              {(featuredProducts && featuredProducts.length > 0) ? featuredProducts.map((product) => (
+                <div key={product.id} className="product-card">
+                  <div className="product-image-wrapper">
+                    <div className="product-badge">Destaque</div>
+                    <div className="product-image-placeholder">
+                      <Image
+                        src={product.image || "/images/products/fralda-exemplo.jpg"}
+                        alt={product.name}
+                        fill
+                        style={{ objectFit: 'contain', padding: '1rem' }}
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                    </div>
+                  </div>
+                  <div className="product-content">
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-type">{product.type}</p>
+                    <p className="product-description">
+                      {product.description || "Artigo artesanal feito com amor."}
+                    </p>
+                    <div className="product-footer">
+                      <span className="product-price">€{product.price.toFixed(2)}</span>
+                      <button className="btn-add-cart">Adicionar</button>
+                    </div>
                   </div>
                 </div>
-                <div className="product-content">
-                  <h3 className="product-name">Reserva do Douro 2018</h3>
-                  <p className="product-type">Vinho Tinto</p>
-                  <p className="product-description">
-                    Um vinho robusto com notas de frutas maduras e carvalho
-                  </p>
-                  <div className="product-footer">
-                    <span className="product-price">€45,00</span>
-                    <button className="btn-add-cart">Adicionar</button>
+              )) : (
+                /* Fallback placeholders */
+                <>
+                  <div className="product-card opacity-50">
+                    <div className="product-image-wrapper">
+                      <div className="product-image-placeholder">
+                        <Image src="/images/products/fralda-exemplo.jpg" alt="Fralda" fill style={{ objectFit: 'contain', padding: '1rem' }} />
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <h3 className="product-name">Fralda Bordada (Exemplo)</h3>
+                      <p className="product-type">Bebé</p>
+                      <div className="product-footer">
+                        <span className="product-price">€15,00</span>
+                        <button className="btn-add-cart" disabled>Em breve</button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Product 2 */}
-              <div className="product-card">
-                <div className="product-image-wrapper">
-                  <div className="product-badge badge-exclusive">Exclusivo</div>
-                  <div className="product-image-placeholder">
-                    <Image
-                      src="/images/products/alentejo-2019.png"
-                      alt="Quinta do Alentejo 2019"
-                      fill
-                      style={{ objectFit: 'contain', padding: '1rem' }}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
+                  <div className="product-card opacity-50">
+                    <div className="product-image-wrapper">
+                      <div className="product-image-placeholder">
+                        <Image src="/images/products/babete-exemplo.jpg" alt="Babete" fill style={{ objectFit: 'contain', padding: '1rem' }} />
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <h3 className="product-name">Babete Personalizado (Exemplo)</h3>
+                      <p className="product-type">Bebé</p>
+                      <div className="product-footer">
+                        <span className="product-price">€10,00</span>
+                        <button className="btn-add-cart" disabled>Em breve</button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="product-content">
-                  <h3 className="product-name">Quinta do Alentejo 2019</h3>
-                  <p className="product-type">Vinho Branco</p>
-                  <p className="product-description">
-                    Elegante e fresco, com aromas a citrinos e flores brancas
-                  </p>
-                  <div className="product-footer">
-                    <span className="product-price">€38,00</span>
-                    <button className="btn-add-cart">Adicionar</button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Product 3 */}
-              <div className="product-card">
-                <div className="product-image-wrapper">
-                  <div className="product-badge">Premium</div>
-                  <div className="product-image-placeholder">
-                    <Image
-                      src="/images/products/grande-reserva-2015.png"
-                      alt="Grande Reserva 2015"
-                      fill
-                      style={{ objectFit: 'contain', padding: '1rem' }}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
-                </div>
-                <div className="product-content">
-                  <h3 className="product-name">Grande Reserva 2015</h3>
-                  <p className="product-type">Vinho Tinto</p>
-                  <p className="product-description">
-                    Complexo e elegante, ideal para ocasiões especiais
-                  </p>
-                  <div className="product-footer">
-                    <span className="product-price">€85,00</span>
-                    <button className="btn-add-cart">Adicionar</button>
-                  </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
 
             <div className="section-cta">
@@ -200,8 +173,8 @@ export default function Home() {
           <div className="about-grid">
             <div className="about-image">
               <Image
-                src="/images/brand/vineyard-sunset-house.jpg"
-                alt="3G Wine Vineyard"
+                src="/images/products/fralda-exemplo.jpg"
+                alt="Artesanato Lizzie"
                 fill
                 style={{ objectFit: 'cover' }}
                 quality={100}
@@ -210,50 +183,19 @@ export default function Home() {
             </div>
 
             <div className="about-content">
-              <div className="about-badge">A Nossa História</div>
+              <div className="about-badge">A Minha História</div>
               <h2 className="about-title">
-                Paixão pelo Vinho, <br />
-                <span className="text-gold">Compromisso com a Excelência</span>
+                Paixão pelo Artesanato, <br />
+                <span className="text-secondary">Compromisso com a Qualidade</span>
               </h2>
-              <div className="divider-gold" style={{ margin: 'var(--spacing-md) 0' }}></div>
+              <div className="divider-secondary" style={{ margin: 'var(--spacing-md) 0' }}></div>
               <p className="about-text">
-                Na 3G Wine, selecionamos cuidadosamente cada garrafa para oferecer
-                aos nossos clientes uma experiência única e memorável. Os nossos vinhos
-                são escolhidos a dedo das melhores quintas de Portugal e do mundo.
-              </p>
-              <p className="about-text">
-                Com anos de experiência e uma paixão inabalável pelo vinho,
-                garantimos que cada produto na nossa seleção representa o melhor
-                em qualidade, sabor e tradição.
+                O Mundo de Lizzie nasce da paixão por criar peças únicas e personalizadas
+                que contam histórias. Cada ponto é dado com amor.
               </p>
               <Link href="/sobre" className="btn btn-outline">
-                Saiba Mais Sobre Nós
+                Conheça a Minha História
               </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Newsletter Section */}
-        <section className="newsletter-cta">
-          <div className="container">
-            <div className="newsletter-content">
-              <div className="newsletter-icon">📧</div>
-              <h2 className="newsletter-title">Receba as Nossas Novidades</h2>
-              <p className="newsletter-text">
-                Subscreva a nossa newsletter e fique a par de lançamentos exclusivos,
-                promoções especiais e eventos.
-              </p>
-              <form className="newsletter-form-main">
-                <input
-                  type="email"
-                  placeholder="O seu endereço de email"
-                  className="newsletter-input-main"
-                  required
-                />
-                <button type="submit" className="btn btn-primary">
-                  Subscrever
-                </button>
-              </form>
             </div>
           </div>
         </section>

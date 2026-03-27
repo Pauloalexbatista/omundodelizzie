@@ -5,19 +5,17 @@ import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
-import { supabase } from '@/lib/supabase';
+import { getAllProducts } from '@/app/actions/products';
 import './page.css';
 
 interface Product {
-    id: number;
+    id: string;
     name: string;
     type: string;
-    region: string;
-    year: number;
     price: number;
-    description: string;
-    featured: boolean;
-    image: string;
+    description: string | null;
+    image: string | null;
+    is_weekly_highlight: boolean;
 }
 
 export default function LojaPage() {
@@ -29,9 +27,8 @@ export default function LojaPage() {
     const [sortBy, setSortBy] = useState<string>('featured');
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-
-    const types = ['Todos', 'Tinto', 'Branco', 'Rosé', 'Espumante', 'Outros'];
-    const priceRanges = ['Todos', '0-30€', '30-50€', '50-100€', '100+€'];
+    const types = ['Todos', 'Bebé', 'Batismo', 'Decoração', 'Outros'];
+    const priceRanges = ['Todos', '0-15€', '15-30€', '30-50€', '50+€'];
 
     useEffect(() => {
         fetchProducts();
@@ -40,12 +37,8 @@ export default function LojaPage() {
     async function fetchProducts() {
         try {
             setLoading(true);
-            const { data, error } = await supabase
-                .from('products')
-                .select('*');
-
-            if (error) throw error;
-            if (data) setProducts(data);
+            const data = await getAllProducts();
+            if (data) setProducts(data as Product[]);
         } catch (error) {
             console.error('Erro ao carregar produtos:', error);
         } finally {
@@ -62,10 +55,10 @@ export default function LojaPage() {
 
     if (priceRange !== 'Todos') {
         filteredProducts = filteredProducts.filter(p => {
-            if (priceRange === '0-30€') return p.price <= 30;
+            if (priceRange === '0-15€') return p.price <= 15;
+            if (priceRange === '15-30€') return p.price > 15 && p.price <= 30;
             if (priceRange === '30-50€') return p.price > 30 && p.price <= 50;
-            if (priceRange === '50-100€') return p.price > 50 && p.price <= 100;
-            if (priceRange === '100+€') return p.price > 100;
+            if (priceRange === '50+€') return p.price > 50;
             return true;
         });
     }
@@ -78,9 +71,7 @@ export default function LojaPage() {
     } else if (sortBy === 'name') {
         filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === 'featured') {
-        // Sort by id for now as proxy for default, or if we had a featured column we could use it
-        // The mock data had featured boolean, let's assume Supabase has it or we sort by ID
-        filteredProducts.sort((a, b) => (b.featured === a.featured ? 0 : b.featured ? 1 : -1));
+        filteredProducts.sort((a, b) => (b.is_weekly_highlight === a.is_weekly_highlight ? 0 : b.is_weekly_highlight ? 1 : -1));
     }
 
     return (
@@ -164,7 +155,7 @@ export default function LojaPage() {
                                     <div key={product.id} className="product-card" onClick={() => setSelectedProduct(product)}>
 
                                         <div className="product-image-wrapper">
-                                            {product.featured && (
+                                            {product.is_weekly_highlight && (
                                                 <div className="product-badge">Destaque</div>
                                             )}
                                             <div className="product-image-placeholder">
@@ -185,8 +176,7 @@ export default function LojaPage() {
                                             </div>
 
                                             <div className="product-meta">
-                                                <span className="product-region">📍 {product.region || 'Portugal'}</span>
-                                                <span className="product-year">🗓️ {product.year}</span>
+                                                <span className="product-region">Feito à Mão ✨</span>
                                             </div>
 
                                             <p className="product-description">{product.description}</p>
@@ -248,8 +238,7 @@ export default function LojaPage() {
                                 </div>
 
                                 <div className="product-meta" style={{ marginBottom: '1.5rem' }}>
-                                    <span className="product-region">📍 {selectedProduct.region || 'Portugal'}</span>
-                                    <span className="product-year">🗓️ {selectedProduct.year}</span>
+                                    <span className="product-region">Peça Única Personalizada ✨</span>
                                 </div>
 
                                 <p className="modal-description">{selectedProduct.description}</p>

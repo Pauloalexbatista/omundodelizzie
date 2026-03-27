@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import './Footer.css';
 
 export default function Footer() {
@@ -17,49 +16,35 @@ export default function Footer() {
         setStatus('loading');
         setMessage('');
 
+        // Simulação de newsletter local ou integrável no futuro
         try {
-            const { error } = await supabase
-                .from('newsletter_subscribers')
-                .insert([{ email }]);
-
-            if (error) {
-                if (error.code === '23505') { // Unique violation
-                    setStatus('error');
-                    setMessage('Este email já está registado.');
-                    return;
-                }
-                throw error;
-            }
-
-            setStatus('success');
-            setMessage('Obrigado por subscrever!');
-            setEmail('');
+            // Em vez de Supabase, podemos gravar num ficheiro ou apenas simular por agora
+            console.log('Newsletter subscription for:', email);
+            
+            setTimeout(() => {
+                setStatus('success');
+                setMessage('Obrigado por subscrever! ✨');
+                setEmail('');
+            }, 1000);
         } catch (error: any) {
             console.error('Newsletter error:', error);
             setStatus('error');
-            setMessage(error.message || 'Erro ao subscrever. Tente novamente.');
+            setMessage('Erro ao subscrever. Tente novamente.');
         }
     };
 
     const quickLinks = [
-        { href: '/', label: 'Home' },
+        { href: '/', label: 'Início' },
         { href: '/loja', label: 'Loja' },
-        { href: '/sobre', label: 'Sobre Nós' },
+        { href: '/sobre', label: 'Sobre Mim' },
         { href: '/contactos', label: 'Contactos' },
-        { href: '/admin', label: 'Admin (Dev)' },
+        { href: '/admin', label: 'Administração' },
     ];
 
     const socialLinks = [
         {
-            name: 'Facebook',
-            href: 'https://facebook.com/3gwine',
-            icon: (
-                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-            )
-        },
-        {
             name: 'Instagram',
-            href: 'https://instagram.com/3gwine',
+            href: 'https://instagram.com/omundodelizzie',
             icon: (
                 <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>
             )
@@ -70,18 +55,18 @@ export default function Footer() {
         <footer className="footer">
             <div className="container">
                 <div className="footer-grid">
-                    <div className="footer-section">
-                        <div className="footer-logo">
-                            <span className="logo-text"><span className="logo-3">3</span>GWINE</span>
-                        </div>
-                        <p className="footer-tagline">Garrafeira exclusiva</p>
+                    <div className="footer-brand">
+                        <Link href="/" className="footer-logo">
+                            <span className="logo-text">O Mundo de Lizzie</span>
+                        </Link>
                         <p className="footer-description">
-                            Vinhos premium selecionados com paixão e dedicação para os verdadeiros apreciadores.
+                            Trabalhos manuais feitos com amor e dedicação.
+                            Personalizamos cada peça para tornar os seus momentos ainda mais especiais. ✨
                         </p>
                     </div>
 
                     <div className="footer-section">
-                        <h4 className="footer-title">Links Rápidos</h4>
+                        <h4 className="footer-title">Explorar</h4>
                         <ul className="footer-links">
                             {quickLinks.map((link) => (
                                 <li key={link.href}>
@@ -98,18 +83,11 @@ export default function Footer() {
                         <ul className="footer-info">
                             <li>
                                 <span className="info-icon">📍</span>
-                                Rua António França Borges N-14 B<br />
-                                2625-187 Póvoa de Santa Iria
+                                Portugal (Envios para todo o país)
                             </li>
                             <li>
                                 <span className="info-icon">📧</span>
-                                3gwine@gmail.com<br />
-                                Virtual.mm.wines@gmail.com
-                            </li>
-                            <li>
-                                <span className="info-icon">📞</span>
-                                963 908 617<br />
-                                21 959 15 22
+                                omundodelizzie@gmail.com
                             </li>
                         </ul>
                     </div>
@@ -117,7 +95,7 @@ export default function Footer() {
                     <div className="footer-section">
                         <h4 className="footer-title">Newsletter</h4>
                         <p className="footer-newsletter-text">
-                            Receba as nossas novidades e ofertas exclusivas
+                            Subscreva para receber novidades e mimos exclusivos!
                         </p>
                         <form className="newsletter-form" onSubmit={handleSubscribe}>
                             <input
@@ -134,14 +112,14 @@ export default function Footer() {
                                 className="newsletter-button"
                                 disabled={status === 'loading' || status === 'success'}
                             >
-                                {status === 'loading' ? '...' : status === 'success' ? '✓' : 'Subscrever'}
+                                {status === 'loading' ? '...' : status === 'success' ? '✓' : 'Ok'}
                             </button>
                         </form>
                         {message && (
                             <p style={{
                                 marginTop: '0.5rem',
                                 fontSize: '0.875rem',
-                                color: status === 'error' ? '#f87171' : '#4ade80'
+                                color: status === 'error' ? 'var(--color-secondary)' : '#4ade80'
                             }}>
                                 {message}
                             </p>
@@ -168,14 +146,14 @@ export default function Footer() {
                     </div>
 
                     <p className="copyright">
-                        © {currentYear} 3G Wine. Todos os direitos reservados.
+                        © {currentYear} O Mundo de Lizzie. Feito à mão com amor.
                     </p>
 
                     <button 
                         onClick={() => setShowLegalModal(true)} 
                         className="legal-modal-trigger"
                     >
-                        Termos e Privacidade
+                        Privacidade e Termos
                     </button>
                 </div>
             </div>
@@ -186,29 +164,24 @@ export default function Footer() {
                         <button className="modal-close" onClick={() => setShowLegalModal(false)}>✕</button>
                         
                         <div className="modal-body">
-                            <h2 className="marcellus text-secondary">Termos e Privacidade</h2>
+                            <h2 className="text-primary font-serif">Privacidade e Termos</h2>
                             
                             <section>
-                                <h3>1. Idade Legal</h3>
-                                <p>A venda de bebidas alcoólicas é proibida a menores de 18 anos. Ao navegar e comprar neste site, declara ter a idade legal necessária.</p>
+                                <h3>1. Personalização</h3>
+                                <p>Todas as peças são feitas à mão e personalizadas. O prazo de entrega pode variar consoante a complexidade do trabalho.</p>
                             </section>
 
                             <section>
-                                <h3>2. Proteção de Dados (RGPD)</h3>
-                                <p>A 3G Wine respeita a sua privacidade. Os seus dados são utilizados apenas para processar encomendas e melhorar a sua experiência. Nunca partilhamos os seus dados com terceiros sem consentimento.</p>
+                                <h3>2. Proteção de Dados</h3>
+                                <p>Os seus dados são utilizados exclusivamente para o processamento de encomendas e comunicação direta connosco.</p>
                             </section>
 
                             <section>
-                                <h3>3. Termos de Venda</h3>
-                                <p>Todos os preços incluem IVA. As entregas são feitas com o máximo cuidado. Em caso de litígio, o consumidor pode recorrer a uma entidade de resolução alternativa.</p>
-                            </section>
-
-                            <section>
-                                <h3>4. Cookies</h3>
-                                <p>Utilizamos cookies para garantir que lhe oferecemos a melhor experiência profissional no nosso site.</p>
+                                <h3>3. Encomendas</h3>
+                                <p>Ao realizar uma encomenda, está a apoiar o artesanato local. Agradecemos a sua confiança!</p>
                             </section>
                             
-                            <p className="modal-footer-text">Para questões detalhadas, contacte-nos através dos canais oficiais.</p>
+                            <p className="modal-footer-text">Para qualquer questão, contacte-nos por email ou Instagram.</p>
                         </div>
                     </div>
                 </div>

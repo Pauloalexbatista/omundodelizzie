@@ -21,6 +21,9 @@ COPY . .
 # ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 # ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+# Run Prisma generate before build to ensure the client is ready
+RUN npx prisma generate
+
 RUN npm run build
 
 # 3. Production image, copy all the files and run next

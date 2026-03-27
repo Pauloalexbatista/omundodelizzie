@@ -7,10 +7,12 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
     const [cart, setCart] = useState<Product[]>([]);
+    const [isMounted, setIsMounted] = useState(false);
 
     // Load cart from localStorage on mount
     useEffect(() => {
-        const savedCart = localStorage.getItem('3gwine-cart');
+        setIsMounted(true);
+        const savedCart = localStorage.getItem('lizzie-cart');
         if (savedCart) {
             try {
                 setCart(JSON.parse(savedCart));
@@ -22,8 +24,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Save cart to localStorage whenever it changes
     useEffect(() => {
-        localStorage.setItem('3gwine-cart', JSON.stringify(cart));
-    }, [cart]);
+        if (isMounted) {
+            localStorage.setItem('lizzie-cart', JSON.stringify(cart));
+        }
+    }, [cart, isMounted]);
 
     const addToCart = (product: Product) => {
         setCart((prevCart) => {
@@ -39,11 +43,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         });
     };
 
-    const removeFromCart = (productId: number) => {
+    const removeFromCart = (productId: string) => {
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     };
 
-    const updateQuantity = (productId: number, quantity: number) => {
+    const updateQuantity = (productId: string, quantity: number) => {
         if (quantity < 1) return;
         setCart((prevCart) =>
             prevCart.map((item) =>

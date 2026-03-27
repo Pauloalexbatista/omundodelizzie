@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const SITE_PASSWORD = '3GWINE';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'LIZZIE_ADMIN';
+const SITE_PASSWORD = process.env.SITE_PASSWORD || 'OMUNDODELIZZIE';
 
 export async function POST(request: NextRequest) {
     try {
@@ -17,21 +18,24 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false }, { status: 401 });
         }
 
-        if (password === SITE_PASSWORD) {
+        const upperPassword = password?.toUpperCase();
+
+        if (upperPassword === ADMIN_PASSWORD || upperPassword === SITE_PASSWORD) {
             const response = NextResponse.json({ success: true });
-            // Cookie válido por 7 dias, só acessível pelo servidor (HttpOnly)
+            
+            // Cookie válido por 7 dias
             response.cookies.set('site_access', 'granted', {
                 httpOnly: true,
-                secure: false, // Temporariamente false para permitir acesso sem HTTPS/SSL no VPS
+                secure: false, // Temporariamente false para VPS
                 sameSite: 'lax',
-                maxAge: 60 * 60 * 24 * 7, // 7 dias
+                maxAge: 60 * 60 * 24 * 7,
                 path: '/',
             });
             return response;
         }
 
         return NextResponse.json(
-            { success: false, error: 'Password incorreta.' },
+            { success: false, error: 'Palavra-passe incorreta.' },
             { status: 401 }
         );
     } catch {

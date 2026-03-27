@@ -3,9 +3,9 @@ import { CartProvider } from '@/context/CartContext';
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "3GWINE | Garrafeira exclusiva - Vinhos Premium",
-  description: "Descubra a nossa seleção exclusiva de vinhos premium. Qualidade, tradição e excelência em cada garrafa.",
-  keywords: "vinhos, vinho premium, loja de vinhos, vinho português, garrafeira exclusiva",
+  title: "O Mundo de Lizzie | Trabalhos Manuais Personalizados",
+  description: "Personalização de fraldas, babetes, conjuntos de batismo e muito mais. Feito à mão com amor.",
+  keywords: "artesanato, personalizado, bebé, batismo, ponto cruz, feito à mão",
 };
 
 export default function RootLayout({

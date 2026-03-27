@@ -22,10 +22,9 @@ export default function Header() {
     }, []);
 
     const navLinks = [
-        { href: '/vinho-virtual', label: 'VINHO VIRTUAL' },
-        { href: '/loja', label: 'A Nossa Seleção' },
-        { href: '/sobre', label: 'Sobre Nós' },
-        { href: '/contactos', label: 'Contactos' },
+        { href: '/loja', label: 'LOJA' },
+        { href: '/sobre', label: 'SOBRE MIM' },
+        { href: '/contactos', label: 'CONTACTOS' },
     ];
 
     return (
@@ -33,10 +32,9 @@ export default function Header() {
             <div className="container">
                 <div className="header-content">
                     {/* Logo */}
-                    <Link href="/" className="header-logo">
-                        <div className="logo-container">
-                            <span className="logo-text"><span className="logo-3">3</span>GWINE</span>
-                        </div>
+                    <Link href="/" className="logo flex items-center gap-2">
+                      <img src="/images/logo.png" alt="Lizzie Logo" className="w-10 h-10 object-contain" />
+                      <span className="text-secondary logo-text font-bold uppercase tracking-wider">O Mundo de Lizzie</span>
                     </Link>
 
                     {/* Desktop Navigation */}

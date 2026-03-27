@@ -1,16 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { updateSession } from '@/utils/supabase/middleware';
 
 export async function middleware(request: NextRequest) {
-    // 1. Atualizar a sessão do Supabase e verificar proteção de rotas
-    const supabaseResponse = await updateSession(request);
-    
-    // Se o middleware do Supabase retornou um redirecionamento (ex: para /login), usá-lo
-    if (supabaseResponse.headers.get('location')) {
-        return supabaseResponse;
-    }
-
     const accessCookie = request.cookies.get('site_access');
     const { pathname } = request.nextUrl;
 
@@ -21,7 +12,7 @@ export async function middleware(request: NextRequest) {
 
     // Permitir acesso a páginas de autenticação, API e ficheiros estáticos
     if (isAcessoPage || isVerifyApi || isAuthPath || isStaticFile) {
-        return supabaseResponse;
+        return NextResponse.next();
     }
 
     // Redirecionar para a página de acesso se não houver cookie (proteção global do site)
@@ -31,7 +22,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(url);
     }
 
-    return supabaseResponse;
+    return NextResponse.next();
 }
 
 // Configurar o matcher para aplicar o middleware a todas as rotas

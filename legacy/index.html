@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="O Mundo de Lizzie - Personalizo fraldas, babetes, toalhões de banho por encomenda, assim como conjuntos de Batismo. Pintado à mão ou bordado a ponto cruz.">
+    <meta name="keywords"
+        content="fraldas personalizadas, babetes, toalhões de banho, conjuntos batismo, bordado ponto cruz, pintado à mão">
+    <meta name="author" content="O Mundo de Lizzie">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="O Mundo de Lizzie - Personalização de Artigos para Bebé">
+    <meta property="og:description"
+        content="Personalizo fraldas, babetes, toalhões de banho por encomenda, assim como conjuntos de Batismo. Pintado à mão ou bordado a ponto cruz.">
+    <meta property="og:url" content="https://www.facebook.com/omundodelizzie">
+
+    <title>O Mundo de Lizzie - Personalização de Artigos para Bebé</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#home" class="logo"><img src="crown-icon.png" alt="Coroa" class="logo-icon">O Mundo de Lizzie</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#about">Sobre</a></li>
+                <li><a href="#gallery">Galeria</a></li>
+                <li><a href="#social">Redes Sociais</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>O Mundo de Lizzie</h1>
+            <p class="hero-tagline">Personalização de artigos para bebé<br>feitos com amor e dedicação ✨</p>
+            <a href="#gallery" class="cta-button">Ver Trabalhos</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about section" id="about">
+        <div class="container">
+            <h2 class="section-title text-center fade-in">Sobre Mim</h2>
+            <div class="about-content fade-in">
+                <p>
+                    Personalizo fraldas, babetes, toalhões de banho por encomenda, assim como conjuntos de Batismo.
+                    Pintado à mão ou bordado a ponto cruz ⭐
+                </p>
+                <p>
+                    Cada peça é criada com muito carinho e atenção aos detalhes, tornando cada momento especial
+                    ainda mais único e memorável.
+                </p>
+                <p>
+                    Explore a galeria e descubra o que posso criar para si! 💕
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery section" id="gallery">
+        <div class="container">
+            <h2 class="section-title text-center fade-in">Galeria de Trabalhos</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Images will be loaded dynamically via JavaScript -->
+            </div>
+            <div class="text-center" style="margin-top: 2rem;">
+                <button class="cta-button" id="loadMoreBtn" style="display: none;">Ver Mais Trabalhos</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section class="social section" id="social">
+        <div class="container">
+            <h2 class="text-center fade-in">Siga-me nas Redes Sociais</h2>
+            <p class="text-center fade-in" style="color: white; margin-top: 1rem; margin-bottom: 2rem;">
+                Fique a par das novidades e veja mais dos meus trabalhos!
+            </p>
+            <div class="social-links fade-in">
+                <a href="https://www.facebook.com/omundodelizzie" target="_blank" rel="noopener noreferrer"
+                    class="social-button">
+                    <i class="fab fa-facebook social-icon"></i>
+                    <span>Facebook</span>
+                </a>
+                <a href="https://www.instagram.com/o.mundo.de.lizzie/" target="_blank" rel="noopener noreferrer"
+                    class="social-button">
+                    <i class="fab fa-instagram social-icon"></i>
+                    <span>Instagram</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact section" id="contact">
+        <div class="container">
+            <h2 class="section-title text-center fade-in">Entre em Contacto</h2>
+            <p class="text-center fade-in" style="max-width: 600px; margin: 0 auto 2rem;">
+                Tem alguma ideia especial? Quer encomendar uma peça personalizada?
+                Envie-me uma mensagem e vamos criar algo único juntos!
+            </p>
+            <form class="contact-form fade-in" id="contactForm">
+                <div class="form-group">
+                    <label for="name">Nome *</label>
+                    <input type="text" id="name" name="name" required placeholder="O seu nome">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required placeholder="seuemail@exemplo.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Opcional">
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensagem *</label>
+                    <textarea id="message" name="message" required
+                        placeholder="Conte-me sobre o que gostaria de encomendar..."></textarea>
+                </div>
+                <button type="submit" class="submit-button">Enviar Mensagem</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 O Mundo de Lizzie. Todos os direitos reservados.</p>
+            <p style="margin-top: 0.5rem;">Feito com 💕 e muito carinho</p>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">&times;</button>
+            <img src="" alt="Imagem ampliada" id="lightboxImage">
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
