@@ -6,7 +6,7 @@ export interface Product {
     description?: string | null;
     is_weekly_highlight?: boolean;
     weekly_highlight_image?: string;
-    image: string;
+    image: string | null;
     quantity?: number;
 }
 

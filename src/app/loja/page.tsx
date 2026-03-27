@@ -160,7 +160,7 @@ export default function LojaPage() {
                                             )}
                                             <div className="product-image-placeholder">
                                                 <Image
-                                                    src={product.image || '/images/products/douro-2018.png'}
+                                                    src={product.image || '/logo.png'}
                                                     alt={product.name}
                                                     fill
                                                     style={{ objectFit: 'contain', padding: '1rem' }}
@@ -224,7 +224,7 @@ export default function LojaPage() {
                         <div className="modal-body">
                             <div className="modal-image-container">
                                 <Image
-                                    src={selectedProduct.image || '/images/products/douro-2018.png'}
+                                    src={selectedProduct.image || '/logo.png'}
                                     alt={selectedProduct.name}
                                     fill
                                     style={{ objectFit: 'contain', padding: '2rem' }}

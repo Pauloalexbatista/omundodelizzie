@@ -136,7 +136,7 @@ export default function CartPage() {
                         O seu carrinho está vazio.
                     </p>
                     <Link href="/loja" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-                        Descobrir Vinhos
+                        Descobrir Produtos
                     </Link>
                 </div>
             ) : (
@@ -250,7 +250,7 @@ export default function CartPage() {
                                         flexShrink: 0,
                                     }}>
                                         <Image
-                                            src={item.image || '/images/products/douro-2018.png'}
+                                            src={item.image || '/logo.png'}
                                             alt={item.name}
                                             fill
                                             style={{ objectFit: 'contain', padding: '0.5rem' }}
@@ -258,7 +258,7 @@ export default function CartPage() {
                                     </div>
                                     <div style={{ flex: 1 }}>
                                         <h3 style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.25rem' }}>{item.name}</h3>
-                                        <p style={{ color: 'var(--color-secondary)', fontSize: '0.9rem' }}>{item.type} | {item.year}</p>
+                                        <p style={{ color: 'var(--color-secondary)', fontSize: '0.9rem' }}>{item.type}</p>
                                         <button
                                             onClick={() => removeFromCart(item.id)}
                                             style={{
