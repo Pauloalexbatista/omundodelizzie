@@ -45,7 +45,7 @@ export default function Home() {
               <h1 className="hero-title animate-fadeIn flex items-center gap-4">
                 O Mundo de <br />
                 <span className="text-gold logo-text-hero">Lizzie</span>
-                <img src="/images/crown-icon.png" alt="Crown" className="hero-crown-icon" />
+                <img src="/images/logo.png" alt="Logo" className="hero-crown-icon" />
               </h1>
               <p className="hero-subtitle animate-fadeIn">
                 Personalização de artigos feitos à mão com amor e dedicação para todas as ocasiões. ✨
@@ -173,8 +173,8 @@ export default function Home() {
           <div className="about-grid">
             <div className="about-image">
               <Image
-                src="/images/products/fralda-exemplo.jpg"
-                alt="Artesanato Lizzie"
+                src="/images/atelier.png"
+                alt="Ateliê O Mundo de Lizzie"
                 fill
                 style={{ objectFit: 'cover' }}
                 quality={100}

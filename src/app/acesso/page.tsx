@@ -37,7 +37,8 @@ export default function AccessPage() {
     return (
         <div className={styles.wrapper}>
             <div className={styles.content}>
-                <div className="mb-6">
+                <div className="mb-6 flex flex-col items-center gap-4">
+                    <img src="/images/logo.png" alt="Lizzie Logo" style={{ width: '120px', height: 'auto' }} />
                     <span className="text-4xl text-white logo-text font-serif">O Mundo de Lizzie</span>
                 </div>
                 <p className={styles.subtitle}>Trabalhos Manuais feitos com Amor e Dedicação</p>
