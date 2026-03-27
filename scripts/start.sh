@@ -5,15 +5,9 @@ cd /app
 
 echo "Starting O Mundo de Lizzie..."
 
-# Fix: If the volume at /app/prisma hides the image files, restore from backup
-if [ ! -f /app/prisma/schema.prisma ]; then
-  echo "Restoring Prisma schema from backup into persistent volume..."
-  cp -r /app/prisma_backup/* /app/prisma/
-fi
-
-# Run Prisma migrations/db push to ensure tables exist in the production SQLite file
-echo "Initializing database..."
-npx prisma db push --accept-data-loss
+# Fix: Use the schema from the root (not hidden by volume)
+echo "Initializing database using /app/schema.prisma..."
+npx prisma db push --schema /app/schema.prisma --accept-data-loss
 
 # Start the Next.js server
 echo "Starting Next.js server..."
