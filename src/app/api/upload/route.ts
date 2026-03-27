@@ -18,22 +18,29 @@ export async function POST(request: Request) {
         const filename = file.name.replace(/\s+/g, '-').toLowerCase();
         const uniqueFilename = `${Date.now()}-${filename}`;
         
-        const uploadDir = path.join(process.cwd(), 'public/images/products');
-        
-        // Ensure directory exists
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-
-        const filePath = path.join(uploadDir, uniqueFilename);
-        fs.writeFileSync(filePath, buffer);
-
-        return NextResponse.json({ 
-            success: true, 
-            path: `/images/products/${uniqueFilename}` 
-        });
-    } catch (error) {
-        console.error('Error during file upload:', error);
-        return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+    const uploadDir = path.join(process.cwd(), 'public/images/products');
+    console.log('API: Upload - Target directory:', uploadDir);
+    
+    // Ensure directory exists
+    if (!fs.existsSync(uploadDir)) {
+      console.log('API: Upload - Creating directory...');
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
+
+    const filePath = path.join(uploadDir, uniqueFilename);
+    console.log('API: Upload - Writing file to:', filePath);
+    fs.writeFileSync(filePath, buffer);
+    console.log('API: Upload - Success!');
+
+    return NextResponse.json({ 
+      success: true, 
+      path: `/images/products/${uniqueFilename}` 
+    });
+  } catch (error: any) {
+    console.error('API: Upload - CRITICAL ERROR:', {
+      message: error.message,
+      stack: error.stack
+    });
+    return NextResponse.json({ error: `Upload falhou: ${error.message}` }, { status: 500 });
+  }
 }

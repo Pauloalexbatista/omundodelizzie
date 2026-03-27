@@ -59,42 +59,54 @@ export async function getProductById(id: string) {
 
 export async function createProduct(data: any) {
   try {
+    console.log('Action: createProduct - Starting creation for:', data.name);
     const product = await prisma.product.create({
       data: {
         name: data.name,
         type: data.type,
-        price: data.price,
+        price: Number(data.price),
         description: data.description || null,
         image: data.image || null,
         is_weekly_highlight: data.is_weekly_highlight || false,
         weekly_highlight_image: data.weekly_highlight_image || null,
       },
     });
+    console.log('Action: createProduct - Success!', product.id);
     return product;
-  } catch (error) {
-    console.error('Error creating product:', error);
-    throw error;
+  } catch (error: any) {
+    console.error('Action: createProduct - CRITICAL ERROR:', {
+      message: error.message,
+      stack: error.stack,
+      data: { ...data, image: '...' }
+    });
+    throw new Error(`Erro na base de dados: ${error.message}`);
   }
 }
 
 export async function updateProduct(id: string, data: any) {
   try {
+    console.log('Action: updateProduct - Starting update for ID:', id);
     const product = await prisma.product.update({
       where: { id },
       data: {
         name: data.name,
         type: data.type,
-        price: data.price,
+        price: Number(data.price),
         description: data.description || null,
         image: data.image || null,
         is_weekly_highlight: data.is_weekly_highlight,
         weekly_highlight_image: data.weekly_highlight_image,
       },
     });
+    console.log('Action: updateProduct - Success!', id);
     return product;
-  } catch (error) {
-    console.error('Error updating product:', error);
-    throw error;
+  } catch (error: any) {
+    console.error('Action: updateProduct - CRITICAL ERROR:', {
+      message: error.message,
+      stack: error.stack,
+      id
+    });
+    throw new Error(`Erro na base de dados: ${error.message}`);
   }
 }
 
