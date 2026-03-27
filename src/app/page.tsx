@@ -124,39 +124,10 @@ export default function Home() {
                   </div>
                 </div>
               )) : (
-                /* Fallback placeholders */
-                <>
-                  <div className="product-card opacity-50">
-                    <div className="product-image-wrapper">
-                      <div className="product-image-placeholder">
-                        <Image src="/images/products/fralda-exemplo.jpg" alt="Fralda" fill style={{ objectFit: 'contain', padding: '1rem' }} />
-                      </div>
-                    </div>
-                    <div className="product-content">
-                      <h3 className="product-name">Fralda Bordada (Exemplo)</h3>
-                      <p className="product-type">Bebé</p>
-                      <div className="product-footer">
-                        <span className="product-price">€15,00</span>
-                        <button className="btn-add-cart" disabled>Em breve</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="product-card opacity-50">
-                    <div className="product-image-wrapper">
-                      <div className="product-image-placeholder">
-                        <Image src="/images/products/babete-exemplo.jpg" alt="Babete" fill style={{ objectFit: 'contain', padding: '1rem' }} />
-                      </div>
-                    </div>
-                    <div className="product-content">
-                      <h3 className="product-name">Babete Personalizado (Exemplo)</h3>
-                      <p className="product-type">Bebé</p>
-                      <div className="product-footer">
-                        <span className="product-price">€10,00</span>
-                        <button className="btn-add-cart" disabled>Em breve</button>
-                      </div>
-                    </div>
-                  </div>
-                </>
+                /* No products yet */
+                <div className="w-full text-center py-10">
+                  <p className="text-gray-500 italic">Novidades em breve... ✨</p>
+                </div>
               )}
             </div>
 

@@ -204,7 +204,7 @@ export default function LojaPage() {
                             </div>
                         )}
 
-                        {filteredProducts.length === 0 && (
+                        {!loading && filteredProducts.length === 0 && (
                             <div className="no-results">
                                 <div className="no-results-icon">🔍</div>
                                 <h3>Nenhum produto encontrado</h3>

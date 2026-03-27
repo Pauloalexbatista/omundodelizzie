@@ -36,16 +36,23 @@ RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/package.json ./package.json
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Ensure scripts are executable
+USER root
+RUN chmod +x scripts/start.sh
 USER nextjs
 
 EXPOSE 3000
 
 ENV PORT=3000
 
-CMD ["node", "server.js"]
+# Use the startup script instead of direct node call
+CMD ["sh", "scripts/start.sh"]
