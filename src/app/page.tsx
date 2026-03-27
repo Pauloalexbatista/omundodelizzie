@@ -65,13 +65,12 @@ export default function Home() {
                 <div className="highlight-label">Destaque da Semana</div>
                 <div className="highlight-frame">
                   <div className="highlight-image-container">
-                    <Image
-                      src={weeklyHighlight?.weekly_highlight_image || weeklyHighlight?.image || "/images/products/fralda-exemplo.jpg"}
-                      alt={weeklyHighlight?.name || "Destaque da Semana"}
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      priority
-                    />
+                                        <Image
+                                            src={weeklyHighlight?.weekly_highlight_image || "/images/handmade-hero.png"}
+                                            alt={weeklyHighlight?.name || "Destaque da Semana"}
+                                            fill
+                                            style={{ objectFit: 'cover' }}
+                                        />
                   </div>
                   <div className="highlight-info">
                     <h3>{weeklyHighlight?.name || "Artigo Especial"}</h3>
@@ -96,6 +95,50 @@ export default function Home() {
             </div>
 
             <div className="products-grid">
+              {/* Atelier Section */}
+              <section className="atelier-section">
+                  <div className="atelier-grid">
+                      <div className="atelier-content">
+                          <h2 className="section-title">O Meu Ateliê</h2>
+                          <div className="divider-gold" style={{ margin: 'var(--spacing-md) 0' }}></div>
+                          
+                          <p className="atelier-text">
+                              O meu ateliê é o espaço onde a imaginação ganha forma. É aqui que as linhas se cruzam 
+                              para criar histórias e onde os tecidos se transformam em memórias. Equipado com 
+                              tudo o que é necessário para garantir a perfeição técnica dos bordados e costuras.
+                          </p>
+                          
+                          <p className="atelier-text">
+                              Convido-vos a explorar a minha coleção e a descobrir como podemos tornar 
+                              o vosso enxoval ou o vosso presente ainda mais memorável.
+                          </p>
+                          
+                          <div className="atelier-stats">
+                              <div className="stat-item">
+                                  <div className="stat-number">Artigos</div>
+                                  <div className="stat-label">Personalizados</div>
+                              </div>
+                              <div className="stat-item">
+                                  <div className="stat-number">100%</div>
+                                  <div className="stat-label">Feito à Mão</div>
+                              </div>
+                              <div className="stat-item">
+                                  <div className="stat-number">10+</div>
+                                  <div className="stat-label">Anos de Experiência</div>
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div className="atelier-image">
+                          <Image 
+                              src="/images/atelier-v2.png" 
+                              alt="Ateliê O Mundo de Lizzie" 
+                              fill
+                              style={{ objectFit: 'cover' }}
+                          />
+                      </div>
+                  </div>
+              </section>
               {(featuredProducts && featuredProducts.length > 0) ? featuredProducts.map((product) => (
                 <div key={product.id} className="product-card">
                   <div className="product-image-wrapper">

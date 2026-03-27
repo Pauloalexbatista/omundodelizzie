@@ -12,7 +12,7 @@ export default function SobrePage() {
                 <section className="sobre-hero">
                     <div className="sobre-hero-image">
                         <Image
-                            src="/images/lizzie-bg.png"
+                            src="/images/handmade-hero.png"
                             alt="O Mundo de Lizzie Ateliê"
                             fill
                             style={{ objectFit: 'cover' }}
@@ -61,7 +61,7 @@ export default function SobrePage() {
 
                             <div className="story-image">
                                 <Image
-                                    src="/images/lizzie-bg.png"
+                                    src="/images/atelier-v2.png"
                                     alt="Artesanato com Amor"
                                     fill
                                     style={{ objectFit: 'cover', borderRadius: 'var(--radius-lg)' }}
@@ -135,24 +135,24 @@ export default function SobrePage() {
                 </section>
 
                 {/* Atelier Section */}
-                <section className="cellar-section">
-                    <div className="cellar-grid">
-                        <div className="cellar-content">
+                <section className="atelier-section">
+                    <div className="atelier-grid">
+                        <div className="atelier-content">
                             <h2 className="section-title">O Meu Ateliê</h2>
                             <div className="divider-gold" style={{ margin: 'var(--spacing-md) 0' }}></div>
 
-                            <p className="cellar-text">
+                            <p className="atelier-text">
                                 O meu ateliê é o espaço onde a imaginação ganha forma. É aqui que as linhas se cruzam 
                                 para criar histórias e onde os tecidos se transformam em memórias. Equipado com 
                                 tudo o que é necessário para garantir a perfeição técnica dos bordados e costuras.
                             </p>
 
-                            <p className="cellar-text">
+                            <p className="atelier-text">
                                 Convido-vos a explorar a minha coleção e a descobrir como podemos tornar 
                                 o vosso enxoval ou o vosso presente ainda mais memorável.
                             </p>
 
-                            <div className="cellar-stats">
+                            <div className="atelier-stats">
                                 <div className="stat-item">
                                     <div className="stat-number">200+</div>
                                     <div className="stat-label">Artigos</div>
@@ -168,9 +168,9 @@ export default function SobrePage() {
                             </div>
                         </div>
 
-                        <div className="cellar-image">
+                        <div className="atelier-image">
                             <Image
-                                src="/images/access-bg.png"
+                                src="/images/atelier-v2.png"
                                 alt="Ateliê O Mundo de Lizzie"
                                 fill
                                 style={{ objectFit: 'cover' }}
