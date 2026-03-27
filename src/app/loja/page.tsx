@@ -27,7 +27,7 @@ export default function LojaPage() {
     const [sortBy, setSortBy] = useState<string>('featured');
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-    const types = ['Todos', 'Bebé', 'Batismo', 'Decoração', 'Outros'];
+    const types = ['Todos', 'Bebé', 'Batismo', 'Brincos', 'Decoração', 'Outros'];
     const priceRanges = ['Todos', '0-15€', '15-30€', '30-50€', '50+€'];
 
     useEffect(() => {

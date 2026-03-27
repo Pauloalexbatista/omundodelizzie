@@ -42,9 +42,8 @@ export default function Home() {
             {/* Coluna Esquerda: Texto e Botões */}
             <div className="hero-text-side">
               <div className="hero-badge animate-fadeIn">Trabalhos Manuais Únicos</div>
-              <h1 className="hero-title animate-fadeIn flex items-center gap-4">
-                O Mundo de <br />
-                <span className="text-gold logo-text-hero">Lizzie</span>
+              <h1 className="hero-title animate-fadeIn">
+                O Mundo de <span className="text-gold logo-text-hero">Lizzie</span>
                 <img src="/images/logo.png" alt="Logo" className="hero-crown-icon" />
               </h1>
               <p className="hero-subtitle animate-fadeIn">

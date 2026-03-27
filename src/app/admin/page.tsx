@@ -31,10 +31,6 @@ export default function AdminPage() {
     const [authError, setAuthError] = useState('');
     const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-    // Image Selection State
-    const [availableImages, setAvailableImages] = useState<string[]>([]);
-    const [showImageSelector, setShowImageSelector] = useState(false);
-    const [selectorTarget, setSelectorTarget] = useState<'image' | 'weekly_highlight_image'>('image');
 
     // Form State
     const [formData, setFormData] = useState<Partial<Product>>({
@@ -47,12 +43,12 @@ export default function AdminPage() {
         weekly_highlight_image: ''
     });
 
-    const types = ['Bebé', 'Batismo', 'Decoração', 'Outros'];
+    const types = ['Bebé', 'Batismo', 'Brincos', 'Decoração', 'Outros'];
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         checkAuth();
         fetchProducts();
-        fetchImages();
     }, []);
 
     async function checkAuth() {
@@ -109,17 +105,6 @@ export default function AdminPage() {
         }
     }
 
-    async function fetchImages() {
-        try {
-            const response = await fetch('/api/images');
-            const data = await response.json();
-            if (data.images) {
-                setAvailableImages(data.images);
-            }
-        } catch (error) {
-            console.error('Erro ao buscar imagens:', error);
-        }
-    }
 
     async function handleDelete(id: string) {
         if (!confirm('Tem a certeza que deseja apagar este produto?')) return;
@@ -138,7 +123,6 @@ export default function AdminPage() {
         setEditingProduct(product);
         setFormData(product);
         setView('form');
-        fetchImages();
     }
 
     function handleCreate() {
@@ -153,17 +137,34 @@ export default function AdminPage() {
             weekly_highlight_image: ''
         });
         setView('form');
-        fetchImages();
     }
 
-    function openSelector(target: 'image' | 'weekly_highlight_image') {
-        setSelectorTarget(target);
-        setShowImageSelector(true);
-    }
+    async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>, target: 'image' | 'weekly_highlight_image') {
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-    function handleSelectImage(imagePath: string) {
-        setFormData({ ...formData, [selectorTarget]: imagePath });
-        setShowImageSelector(false);
+        setIsUploading(true);
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', file);
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formDataUpload
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setFormData(prev => ({ ...prev, [target]: data.path }));
+            } else {
+                alert('Erro ao carregar imagem.');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('Erro na ligação ao servidor.');
+        } finally {
+            setIsUploading(false);
+        }
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -175,6 +176,12 @@ export default function AdminPage() {
         }
 
         try {
+            // Validate price
+            if (isNaN(formData.price || 0)) {
+                alert('Por favor, introduza um preço válido.');
+                return;
+            }
+
             if (editingProduct) {
                 await updateProduct(editingProduct.id, formData);
                 alert('Produto atualizado com sucesso!');
@@ -397,22 +404,27 @@ export default function AdminPage() {
 
                         <div style={styles.formGroup}>
                             <label style={styles.label}>Imagem do Artigo</label>
-                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <div className="relative flex-1">
                                 <input
-                                    type="text"
-                                    readOnly
-                                    className="input"
-                                    value={formData.image || ''}
-                                    placeholder="Selecione uma imagem"
-                                    style={{ flex: 1, backgroundColor: '#f9fafb' }}
+                                    type="file"
+                                    accept="image/*"
+                                    id="image-upload"
+                                    className="hidden"
+                                    onChange={(e) => handleFileUpload(e, 'image')}
                                 />
-                                <button
-                                    type="button"
-                                    className="btn btn-outline"
-                                    onClick={() => openSelector('image')}
+                                <label
+                                    htmlFor="image-upload"
+                                    className={`flex items-center justify-between w-full p-3 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                                        isUploading ? 'bg-gray-50 opacity-50' : 'bg-white hover:border-primary/50'
+                                    }`}
                                 >
-                                    Abrir Galeria
-                                </button>
+                                    <span className="text-gray-500 text-sm">
+                                        {formData.image ? formData.image.split('/').pop() : 'Clique para carregar foto...'}
+                                    </span>
+                                    <span className="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase">
+                                        {isUploading ? 'A carregar...' : 'Procurar'}
+                                    </span>
+                                </label>
                             </div>
                             {formData.image && (
                                 <div style={{ marginTop: '1rem', width: '100px', height: '100px', position: 'relative', border: '1px solid #ddd', borderRadius: '4px' }}>
@@ -444,22 +456,25 @@ export default function AdminPage() {
                         {formData.is_weekly_highlight && (
                             <div style={styles.formGroup}>
                                 <label style={styles.label}>Fotografia de Destaque (Alta Resolução)</label>
-                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                <div className="relative flex-1">
                                     <input
-                                        type="text"
-                                        readOnly
-                                        className="input"
-                                        value={formData.weekly_highlight_image || ''}
-                                        placeholder="Selecione a foto de destaque"
-                                        style={{ flex: 1, backgroundColor: '#fdfaea' }}
+                                        type="file"
+                                        accept="image/*"
+                                        id="weekly-highlight-upload"
+                                        className="hidden"
+                                        onChange={(e) => handleFileUpload(e, 'weekly_highlight_image')}
                                     />
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline"
-                                        onClick={() => openSelector('weekly_highlight_image')}
+                                    <label
+                                        htmlFor="weekly-highlight-upload"
+                                        className="flex items-center justify-between w-full p-3 border-2 border-dashed border-secondary/30 bg-secondary/5 rounded-xl cursor-pointer hover:border-secondary transition-all"
                                     >
-                                        Mudar Foto
-                                    </button>
+                                        <span className="text-gray-500 text-sm">
+                                            {formData.weekly_highlight_image ? formData.weekly_highlight_image.split('/').pop() : 'Clique para carregar foto de destaque...'}
+                                        </span>
+                                        <span className="bg-secondary/20 text-secondary px-4 py-1 rounded-full text-xs font-bold uppercase">
+                                            Procurar
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
                         )}
@@ -475,57 +490,12 @@ export default function AdminPage() {
                             <button
                                 type="submit"
                                 className="btn btn-primary"
+                                disabled={isUploading}
                             >
-                                Salvar Alterações
+                                {isUploading ? 'Aguarde...' : 'Salvar Alterações'}
                             </button>
                         </div>
                     </form>
-
-                    {/* Image Selector Modal */}
-                    {showImageSelector && (
-                        <div style={styles.modalOverlay} onClick={() => setShowImageSelector(false)}>
-                            <div style={styles.modalContent} onClick={e => e.stopPropagation()}>
-                                <h3 className="text-xl font-bold mb-4">Galeria de Imagens</h3>
-                                <div className="text-sm text-gray-500 mb-6">
-                                    Imagens disponíveis em <code>public/images/products</code>.
-                                </div>
-
-                                {availableImages.length === 0 ? (
-                                    <p>Nenhuma imagem encontrada.</p>
-                                ) : (
-                                    <div style={styles.imageGrid}>
-                                        {availableImages.map((img, idx) => (
-                                            <div
-                                                key={idx}
-                                                onClick={() => handleSelectImage(img)}
-                                                className={`cursor-pointer border-2 rounded-lg overflow-hidden aspect-square relative transition-all ${
-                                                    (selectorTarget === 'image' ? formData.image : formData.weekly_highlight_image) === img 
-                                                    ? 'border-primary' 
-                                                    : 'border-gray-100 hover:border-gray-300'
-                                                }`}
-                                            >
-                                                <Image
-                                                    src={img}
-                                                    alt="choice"
-                                                    fill
-                                                    style={{ objectFit: 'cover' }}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                <div className="mt-8 text-right">
-                                    <button
-                                        className="btn btn-outline"
-                                        onClick={() => setShowImageSelector(false)}
-                                    >
-                                        Fechar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         );
